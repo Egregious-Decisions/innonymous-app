@@ -32,7 +32,7 @@ const Login = () => {
   const darkModeSwitchId = 'dark-mode';
 
   return (
-    <VStack _before={background} divider={<Spacer border="none" />} padding="2" height="100vh">
+    <VStack _before={background} divider={<Spacer border="none" />} padding="2" height="100%">
       <Card borderWidth="2px" textAlign="center">
         <CardBody>
           <Heading>Innonymous</Heading>
