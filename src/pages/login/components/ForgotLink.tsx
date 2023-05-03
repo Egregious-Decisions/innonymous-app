@@ -28,14 +28,14 @@ const ForgotLink = () => {
           <ModalHeader>forgor💀 password?</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text mb={5}>
+            <Text marginBottom={5}>
               It's all your fault. Imagine it was a bitcoin wallet instead, what would you do?
             </Text>
             <Image src={`${ForgotImage}`} borderRadius="lg" alt="funny meme" />
           </ModalBody>
 
           <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={onClose}>close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
