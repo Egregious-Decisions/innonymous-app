@@ -1,6 +1,7 @@
 import { Text, Input, Heading, VStack, HStack, Link, Button, Spacer, Box } from '@chakra-ui/react';
 import Background from './components/background.jpg';
 import Panel from './components/Panel';
+import ForgotLink from './components/ForgotLink';
 
 const Login = () => (
   <VStack
@@ -17,7 +18,7 @@ const Login = () => (
       <Input color="gray.200" placeholder="username" />
       <Input color="gray.200" placeholder="password" type="password" />
       <HStack>
-        <Link color="gray.400">forgor💀 credentials?</Link>
+        <ForgotLink />
         <Button>log in</Button>
       </HStack>
     </Panel>
