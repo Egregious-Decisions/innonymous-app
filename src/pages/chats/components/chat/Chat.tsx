@@ -1,15 +1,21 @@
 import { BoxProps, Flex, HStack, Icon, IconButton, Text } from '@chakra-ui/react';
 import { BiArrowBack } from 'react-icons/bi';
+import { useNavigate } from 'react-router-dom';
 import { MdAdd, MdSend } from 'react-icons/md';
 import Header from '../Header';
 import MessagesView from './MessagesView';
 import AutosizeTextarea from '../../../../components/AutosizeTextarea';
 
 const Chat = (props: BoxProps) => {
+  const navigate = useNavigate();
   return (
-    <Flex minHeight="0" direction="column" alignItems="stretch" {...props}>
+    <Flex flex="2" minHeight="0" direction="column" alignItems="stretch" {...props}>
       <Header>
-        <IconButton aria-label="Back to menu" icon={<Icon as={BiArrowBack} />} />
+        <IconButton
+          aria-label="Back to menu"
+          icon={<Icon as={BiArrowBack} />}
+          onClick={() => navigate('..')}
+        />
         <Text>Chat name</Text>
       </Header>
       <MessagesView />

@@ -1,18 +1,35 @@
-import { Grid } from '@chakra-ui/react';
+import { Flex, Hide } from '@chakra-ui/react';
 import Menu from './components/menu/Menu';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
+import { useMemo } from 'react';
 
 const Chats = () => {
+  const { id } = useParams();
+
+  const content = useMemo(
+    () =>
+      id === undefined ? (
+        <>
+          <Menu />
+          <Hide below="md">
+            <Outlet />
+          </Hide>
+        </>
+      ) : (
+        <>
+          <Hide below="md">
+            <Menu />
+          </Hide>
+          <Outlet />
+        </>
+      ),
+    [id],
+  );
+
   return (
-    <Grid
-      height="100%"
-      gridTemplateColumns="480px auto"
-      alignItems="stretch"
-      justifyContent="stretch"
-    >
-      <Menu />
-      <Outlet />
-    </Grid>
+    <Flex height="100%" alignItems="stretch" justifyContent="stretch">
+      {content}
+    </Flex>
   );
 };
 

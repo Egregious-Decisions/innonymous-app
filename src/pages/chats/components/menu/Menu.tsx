@@ -12,7 +12,7 @@ const Menu = (props: BoxProps) => {
   const onLogOut = useCallback(() => dispatch(authSlice.actions.clearToken()), [dispatch]);
 
   return (
-    <Flex minHeight="0" direction="column" alignItems="stretch" {...props}>
+    <Flex flex="1" minHeight="0" direction="column" alignItems="stretch" {...props}>
       <Header>
         <Icon as={FaUserAlt} />
         <Text>Username</Text>
