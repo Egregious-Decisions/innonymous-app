@@ -16,6 +16,9 @@ import {
 import ForgotLink from './components/ForgotLink';
 import Background from './components/background.jpg';
 import DarkThemeSwitch from './components/DarkThemeSwitch';
+import { useAppDispatch } from '../../store/store';
+import { useCallback } from 'react';
+import { authSlice } from './authSlice';
 
 const Login = () => {
   const bgFilter = useColorModeValue('invert(1)', '');
@@ -30,6 +33,10 @@ const Login = () => {
   };
 
   const darkModeSwitchId = 'dark-mode';
+
+  const dispatch = useAppDispatch();
+
+  const onLogIn = useCallback(() => dispatch(authSlice.actions.setToken('test')), [dispatch]);
 
   return (
     <VStack _before={background} divider={<Spacer border="none" />} padding="2" height="100%">
@@ -46,7 +53,9 @@ const Login = () => {
             <Input placeholder="password" type="password" />
             <HStack>
               <ForgotLink />
-              <Button colorScheme="cyan">log in</Button>
+              <Button onClick={onLogIn} colorScheme="cyan">
+                log in
+              </Button>
             </HStack>
           </VStack>
         </CardBody>
