@@ -1,7 +1,7 @@
 type TimeFormat = 'time' | 'chat_time' | 'date' | 'full';
 
 type DateTimeProps = {
-  time: string;
+  time: Date;
   format: TimeFormat;
 };
 
@@ -30,20 +30,19 @@ const getChatTime = (date: Date) => {
 };
 
 const DateTime = ({ time, format }: DateTimeProps) => {
-  const date = new Date(time);
   let formattedTime;
   switch (format) {
     case 'time':
-      formattedTime = getTimeOfDay(date);
+      formattedTime = getTimeOfDay(time);
       break;
     case 'chat_time':
-      formattedTime = getChatTime(date);
+      formattedTime = getChatTime(time);
       break;
     case 'date':
-      formattedTime = getDateString(date);
+      formattedTime = getDateString(time);
       break;
     case 'full':
-      formattedTime = date.toLocaleString('en', { dateStyle: 'full', timeStyle: 'medium' });
+      formattedTime = time.toLocaleString('en', { dateStyle: 'full', timeStyle: 'medium' });
       break;
   }
 

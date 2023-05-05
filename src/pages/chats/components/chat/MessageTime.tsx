@@ -3,12 +3,12 @@ import { AiFillEdit } from 'react-icons/ai';
 import DateTime from '../../../../components/DateTime';
 
 interface MessageTimeProps {
-  updated_at: string;
-  created_at: string;
+  updated_at: Date;
+  created_at: Date;
 }
 
 const MessageTime = ({ updated_at, created_at }: MessageTimeProps) => {
-  const isEdited = created_at !== updated_at;
+  const isEdited = created_at.getTime() !== updated_at.getTime();
   return (
     <Tooltip
       fontSize="sm"

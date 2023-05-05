@@ -7,7 +7,7 @@ import AutosizeTextarea from '../../../../components/AutosizeTextarea';
 
 const Chat = (props: BoxProps) => {
   return (
-    <Flex maxHeight="100%" direction="column" alignItems="stretch" {...props}>
+    <Flex minHeight="0" direction="column" alignItems="stretch" {...props}>
       <Header>
         <IconButton aria-label="Back to menu" icon={<Icon as={BiArrowBack} />} />
         <Text>Chat name</Text>

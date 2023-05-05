@@ -31,8 +31,8 @@ export interface Message {
   author: Id;
   body: MessageText | MessageFiles;
   id: Id;
-  replied_to: Id;
-  forwarded_from: Id;
+  replied_to?: Id;
+  forwarded_from?: Id;
   updated_at: Date;
   created_at: Date;
 }
