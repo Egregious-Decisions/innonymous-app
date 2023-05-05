@@ -31,7 +31,7 @@ const Message = ({ message }: { message: MessageModel }) => {
         </HStack>
       </CardHeader>
       <CardBody padding={0}>
-        <Text>{(message.body as MessageText).data}</Text>
+        <Text overflowWrap="anywhere">{(message.body as MessageText).data}</Text>
       </CardBody>
     </Card>
   );
