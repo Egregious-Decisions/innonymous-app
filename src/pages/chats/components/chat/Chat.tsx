@@ -1,7 +1,9 @@
-import { Box, BoxProps, Flex, Icon, IconButton, Text } from '@chakra-ui/react';
+import { BoxProps, Flex, HStack, Icon, IconButton, Text } from '@chakra-ui/react';
 import { BiArrowBack } from 'react-icons/bi';
+import { MdAdd, MdSend } from 'react-icons/md';
 import Header from '../Header';
 import MessagesView from './MessagesView';
+import AutosizeTextarea from '../../../../components/AutosizeTextarea';
 
 const Chat = (props: BoxProps) => {
   return (
@@ -11,7 +13,11 @@ const Chat = (props: BoxProps) => {
         <Text>Chat name</Text>
       </Header>
       <MessagesView />
-      <Box height="20" />
+      <HStack padding={2} alignItems="end">
+        <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
+        <AutosizeTextarea placeholder="Message text" maxHeight="32" paddingY={2} />
+        <IconButton aria-label="Send message" icon={<Icon as={MdSend} />} />
+      </HStack>
     </Flex>
   );
 };
