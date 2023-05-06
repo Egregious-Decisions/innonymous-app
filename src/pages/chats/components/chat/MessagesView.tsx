@@ -120,7 +120,7 @@ const messages: Message[] = [
 ];
 
 const MessagesView = () => {
-  const bgColor = useColorModeValue('green.200', 'blackAlpha.500');
+  const bgColor = useColorModeValue('blackAlpha.200', '');
 
   return (
     <Stack

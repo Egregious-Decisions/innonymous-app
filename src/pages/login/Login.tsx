@@ -53,7 +53,7 @@ const Login = () => {
             <Input placeholder="password" type="password" />
             <HStack>
               <ForgotLink />
-              <Button onClick={onLogIn} colorScheme="cyan">
+              <Button onClick={onLogIn} colorScheme="teal">
                 log in
               </Button>
             </HStack>

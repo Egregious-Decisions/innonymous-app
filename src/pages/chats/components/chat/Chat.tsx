@@ -9,7 +9,7 @@ import AutosizeTextarea from '../../../../components/AutosizeTextarea';
 const Chat = (props: BoxProps) => {
   const navigate = useNavigate();
   return (
-    <Flex flex="2" minHeight="0" direction="column" alignItems="stretch" {...props}>
+    <Flex minHeight="0" maxHeight="100%" direction="column" alignItems="stretch" {...props}>
       <Header>
         <IconButton
           aria-label="Back to menu"
@@ -19,10 +19,10 @@ const Chat = (props: BoxProps) => {
         <Text>Chat name</Text>
       </Header>
       <MessagesView />
-      <HStack padding={2} alignItems="end">
+      <HStack background="panel-bg" padding={2} alignItems="end">
         <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
         <AutosizeTextarea placeholder="Message text" maxHeight="32" paddingY={2} />
-        <IconButton aria-label="Send message" icon={<Icon as={MdSend} />} />
+        <IconButton colorScheme="teal" aria-label="Send message" icon={<Icon as={MdSend} />} />
       </HStack>
     </Flex>
   );
