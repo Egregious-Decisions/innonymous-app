@@ -1,17 +1,6 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  HStack,
-  LinkBox,
-  LinkOverlay,
-  Spacer,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
-import DateTime from '../../../../components/DateTime';
+import { Divider, VStack } from '@chakra-ui/react';
 import { Chat } from '../../../../store/models';
+import ChatItem from './ChatItem';
 
 const chats: Chat[] = [
   {
@@ -144,29 +133,15 @@ const chats: Chat[] = [
 
 const ChatList = () => {
   return (
-    <VStack maxHeight="100%" alignItems="stretch" paddingX={2} overflowY="scroll">
-      {chats.map(({ id, name, alias, updated_at, about }) => (
-        <LinkBox>
-          <LinkOverlay as={Link} to={id}>
-            <Card key={id} padding={2}>
-              <CardHeader padding={0}>
-                <HStack>
-                  <Text noOfLines={1}>{name}</Text>
-                  <Text minWidth="fit-content" color="whiteAlpha.500">
-                    {alias}
-                  </Text>
-                  <Spacer />
-                  <Text minWidth="fit-content">
-                    <DateTime time={updated_at} format="chat_time" />
-                  </Text>
-                </HStack>
-              </CardHeader>
-              <CardBody padding={0}>
-                <Text noOfLines={1}>{about}</Text>
-              </CardBody>
-            </Card>
-          </LinkOverlay>
-        </LinkBox>
+    <VStack
+      divider={<Divider />}
+      spacing="-0.5"
+      maxHeight="100%"
+      alignItems="stretch"
+      overflowY="scroll"
+    >
+      {chats.map((chat) => (
+        <ChatItem chat={chat} key={chat.id} />
       ))}
     </VStack>
   );

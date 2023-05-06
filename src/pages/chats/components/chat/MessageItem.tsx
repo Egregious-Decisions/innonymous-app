@@ -10,10 +10,10 @@ import {
 import MessageTime from './MessageTime';
 import { Message as MessageModel, MessageText } from '../../../../store/models';
 
-const Message = ({ message }: { message: MessageModel }) => {
+const MessageItem = ({ message }: { message: MessageModel }) => {
   const headerColor = useColorModeValue('gray.800', 'gray.200');
-  const messagesColor = useColorModeValue('gray.200', 'gray.700');
-  const myMessagesColor = useColorModeValue('teal.200', 'teal.500');
+  const messagesColor = useColorModeValue('gray.50', 'gray.700');
+  const myMessagesColor = useColorModeValue('teal.100', 'teal.800');
 
   return (
     <Card
@@ -37,4 +37,4 @@ const Message = ({ message }: { message: MessageModel }) => {
   );
 };
 
-export default Message;
+export default MessageItem;
