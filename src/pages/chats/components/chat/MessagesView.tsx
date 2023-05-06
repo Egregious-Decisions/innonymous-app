@@ -1,4 +1,4 @@
-import { VStack, useColorModeValue } from '@chakra-ui/react';
+import { Stack, useColorModeValue } from '@chakra-ui/react';
 import MessageItem from './MessageItem';
 import { Message } from '../../../../store/models';
 
@@ -123,17 +123,18 @@ const MessagesView = () => {
   const bgColor = useColorModeValue('green.200', 'blackAlpha.500');
 
   return (
-    <VStack
+    <Stack
       background={bgColor}
       maxHeight="100%"
       alignItems="start"
       paddingX={2}
       overflowY="scroll"
+      direction="column-reverse"
     >
       {messages.map((message) => (
         <MessageItem key={message.id} message={message} />
       ))}
-    </VStack>
+    </Stack>
   );
 };
 
