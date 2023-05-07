@@ -1,10 +1,7 @@
 import {
   Text,
-  Input,
   Heading,
   VStack,
-  HStack,
-  Button,
   Spacer,
   FormControl,
   FormLabel,
@@ -12,17 +9,18 @@ import {
   useColorModeValue,
   Card,
   CardBody,
+  useBoolean,
 } from '@chakra-ui/react';
-import ForgotLink from './components/ForgotLink';
 import Background from './components/background.jpg';
 import DarkThemeSwitch from './components/DarkThemeSwitch';
-import { useAppDispatch } from '../../store/store';
-import { useCallback } from 'react';
-import { authSlice } from './authSlice';
+import LoginForm from './components/LoginForm';
+import NewAccountForm from './components/NewAccountForm';
+import { useMemo } from 'react';
 
 const Login = () => {
-  const bgFilter = useColorModeValue('invert(1)', '');
+  const [isCreatingAccount, { on: showCreating, off: showLogin }] = useBoolean(false);
 
+  const bgFilter = useColorModeValue('invert(1)', '');
   const background: SystemStyleObject = {
     zIndex: -1,
     position: 'absolute',
@@ -34,9 +32,15 @@ const Login = () => {
 
   const darkModeSwitchId = 'dark-mode';
 
-  const dispatch = useAppDispatch();
-
-  const onLogIn = useCallback(() => dispatch(authSlice.actions.setToken('test')), [dispatch]);
+  const form = useMemo(
+    () =>
+      isCreatingAccount ? (
+        <NewAccountForm onBackToLogin={showLogin} />
+      ) : (
+        <LoginForm onNewAccount={showCreating} />
+      ),
+    [isCreatingAccount, showCreating, showLogin],
+  );
 
   return (
     <VStack _before={background} divider={<Spacer border="none" />} padding="2" height="100%">
@@ -46,20 +50,11 @@ const Login = () => {
           <Text fontSize="xl">Welcome. Once again.</Text>
         </CardBody>
       </Card>
-      <Card borderWidth="2px">
-        <CardBody>
-          <VStack>
-            <Input placeholder="username" />
-            <Input placeholder="password" type="password" />
-            <HStack>
-              <ForgotLink />
-              <Button onClick={onLogIn} colorScheme="teal">
-                log in
-              </Button>
-            </HStack>
-          </VStack>
-        </CardBody>
-      </Card>
+      <VStack>
+        <Card borderWidth="2px">
+          <CardBody>{form}</CardBody>
+        </Card>
+      </VStack>
       <Card borderWidth="2px">
         <CardBody>
           <FormControl display="flex" alignItems="center">

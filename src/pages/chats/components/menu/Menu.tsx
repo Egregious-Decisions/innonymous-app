@@ -9,7 +9,7 @@ import { authSlice } from '../../../login/authSlice';
 const Menu = (props: BoxProps) => {
   const dispatch = useAppDispatch();
 
-  const onLogOut = useCallback(() => dispatch(authSlice.actions.clearToken()), [dispatch]);
+  const onLogOut = useCallback(() => dispatch(authSlice.actions.clearTokens()), [dispatch]);
 
   return (
     <Flex flex="1" minHeight="0" direction="column" alignItems="stretch" {...props}>

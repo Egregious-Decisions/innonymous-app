@@ -1,40 +1,35 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit';
 import { apiSlice } from '../../store/apiSlice';
 
+interface AuthState {
+  token: string;
+  refresh: string;
+}
+
+export const initialState: AuthState = {
+  token: '',
+  refresh: '',
+};
+
 export const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    token: '',
-  },
+  initialState,
   reducers: {
-    setToken: (state, { payload }: PayloadAction<string>) => ({ ...state, token: payload }),
-    clearToken: (state) => ({ ...state, token: '' }),
+    setTokens: (state, { payload }: PayloadAction<AuthState>) => ({ ...state, ...payload }),
+    clearTokens: (state) => ({ ...state, token: '', refresh: '' }),
   },
   extraReducers: (builder) =>
-    builder
-      .addMatcher(apiSlice.endpoints.authenticate.matchFulfilled, (state, { payload }) => ({
+    builder.addMatcher(
+      isAnyOf(
+        apiSlice.endpoints.createSession.matchFulfilled,
+        apiSlice.endpoints.updateSession.matchFulfilled,
+      ),
+      (state, { payload }) => ({
         ...state,
         token: payload.access_token,
-      }))
-      .addMatcher(
-        isAnyOf(
-          apiSlice.endpoints.authenticate.matchRejected,
-          apiSlice.endpoints.getChat.matchRejected,
-          apiSlice.endpoints.listChats.matchRejected,
-          apiSlice.endpoints.createChat.matchRejected,
-          apiSlice.endpoints.createMessage.matchRejected,
-          apiSlice.endpoints.deleteMessage.matchRejected,
-        ),
-        (state, { payload }) => {
-          if (!payload) {
-            return state;
-          }
-          if (payload.status === 401) {
-            return { ...state, token: '' };
-          }
-          return state;
-        },
-      ),
+        refresh: payload.refresh_token,
+      }),
+    ),
 });
 
-export const { setToken, clearToken } = authSlice.actions;
+export const { setTokens, clearTokens } = authSlice.actions;

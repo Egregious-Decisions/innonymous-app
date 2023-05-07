@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Hide, SystemStyleObject, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Hide, SystemStyleObject, useColorModeValue } from '@chakra-ui/react';
 import Menu from './components/menu/Menu';
 import { Outlet, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
