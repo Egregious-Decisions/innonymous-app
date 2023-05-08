@@ -1,14 +1,14 @@
-import { BoxProps, Button, Flex, Icon, SkeletonText, Spacer, Text } from '@chakra-ui/react';
+import { Button, Flex, Icon, SkeletonText, Spacer, Text } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
+import { useCallback, useMemo } from 'react';
+import { MdLogout, MdSettings } from 'react-icons/md';
 import Header from '../Header';
 import ChatList from './ChatList';
-import { useCallback, useMemo } from 'react';
 import { useAppDispatch } from '../../../../store/store';
 import { authSlice } from '../../../login/authSlice';
 import { apiSlice } from '../../../../store/apiSlice';
-import { MdLogout, MdSettings } from 'react-icons/md';
 
-const Menu = (props: BoxProps) => {
+const Menu = () => {
   const dispatch = useAppDispatch();
   const { isFetching, data } = apiSlice.useGetCurrentUserQuery();
 
@@ -23,7 +23,8 @@ const Menu = (props: BoxProps) => {
   }, [data, isFetching]);
 
   return (
-    <Flex flex="1" minHeight="0" direction="column" alignItems="stretch" {...props}>
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Flex flex="1" minHeight="0" direction="column" alignItems="stretch">
       <Header>
         <Icon as={FaUserAlt} />
         {username}

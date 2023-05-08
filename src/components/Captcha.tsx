@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { Center, HStack, Icon, IconButton, Image, Input, Spinner, VStack } from '@chakra-ui/react';
-import { apiSlice } from '../store/apiSlice';
 import { MdRefresh } from 'react-icons/md';
 import { useEffectOnce } from 'usehooks-ts';
+import { apiSlice } from '../store/apiSlice';
 import { captchaSolutionInputName, captchaTokenInputName } from '../actions/AppAction';
 
 const Captcha = () => {

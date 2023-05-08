@@ -1,10 +1,4 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  Navigate,
-  RouteObject,
-} from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
 import Chats from './pages/chats/Chats';
 import Chat from './pages/chats/components/chat/Chat';
 import NoChatSelected from './pages/chats/components/chat/NoChatSelected';

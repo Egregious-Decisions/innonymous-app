@@ -9,11 +9,10 @@ import {
   useColorModeValue,
   Card,
   CardBody,
-  useBoolean,
 } from '@chakra-ui/react';
+import { Outlet } from 'react-router-dom';
 import Background from './components/background.jpg';
 import DarkThemeSwitch from './components/DarkThemeSwitch';
-import { Outlet, ActionFunction } from 'react-router-dom';
 
 const Login = () => {
   const bgFilter = useColorModeValue('invert(1)', '');

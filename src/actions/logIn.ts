@@ -1,7 +1,7 @@
+import { redirect } from 'react-router-dom';
 import { AppActionFunction, aliasInputName, passwordInputName } from './AppAction';
 import { apiSlice, getErrorMessage } from '../store/apiSlice';
 import { store } from '../store/store';
-import { redirect } from 'react-router-dom';
 
 const logIn: AppActionFunction = async ({ request }) => {
   const formData = await request.formData();

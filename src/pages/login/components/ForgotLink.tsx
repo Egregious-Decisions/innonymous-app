@@ -1,6 +1,5 @@
 import {
   Text,
-  Link,
   Button,
   useDisclosure,
   Modal,
@@ -18,9 +17,9 @@ const ForgotLink = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Link color="gray.400" onClick={onOpen}>
+      <Button variant="link" color="gray.400" onClick={onOpen}>
         forgor💀 password?
-      </Link>
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -29,7 +28,7 @@ const ForgotLink = () => {
           <ModalCloseButton />
           <ModalBody>
             <Text marginBottom={5}>
-              It's all your fault. Imagine it was a bitcoin wallet instead, what would you do?
+              It is all your fault. Imagine it was a bitcoin wallet instead, what would you do?
             </Text>
             <Image src={`${ForgotImage}`} borderRadius="lg" alt="funny meme" />
           </ModalBody>

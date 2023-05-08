@@ -16,7 +16,7 @@ const getChatTime = (date: Date) => {
   const today: number = new Date().setHours(0, 0, 0, 0);
   const thatDay: number = new Date(date).setHours(0, 0, 0, 0);
 
-  if (thatDay == today) {
+  if (thatDay === today) {
     // 23:30 or 11:30 PM
     return getTimeOfDay(date);
   }
@@ -41,12 +41,12 @@ const DateTime = ({ time, format }: DateTimeProps) => {
     case 'date':
       formattedTime = getDateString(time);
       break;
-    case 'full':
+    default:
       formattedTime = time.toLocaleString('en', { dateStyle: 'full', timeStyle: 'medium' });
       break;
   }
 
-  return <>{formattedTime}</>;
+  return formattedTime;
 };
 
 export default DateTime;

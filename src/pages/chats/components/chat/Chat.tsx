@@ -1,4 +1,4 @@
-import { BoxProps, Flex, HStack, Icon, IconButton, Text } from '@chakra-ui/react';
+import { Flex, HStack, Icon, IconButton, Text } from '@chakra-ui/react';
 import { BiArrowBack } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
 import { MdAdd, MdSend } from 'react-icons/md';
@@ -6,10 +6,10 @@ import Header from '../Header';
 import MessagesView from './MessagesView';
 import AutosizeTextarea from '../../../../components/AutosizeTextarea';
 
-const Chat = (props: BoxProps) => {
+const Chat = () => {
   const navigate = useNavigate();
   return (
-    <Flex minHeight="0" maxHeight="100%" direction="column" alignItems="stretch" {...props}>
+    <Flex minHeight="0" maxHeight="100%" direction="column" alignItems="stretch">
       <Header>
         <IconButton
           aria-label="Back to menu"

@@ -1,7 +1,7 @@
 import { Divider, Spinner, VStack, Button, Icon } from '@chakra-ui/react';
+import { MdCreate } from 'react-icons/md';
 import ChatItem from './ChatItem';
 import { apiSlice } from '../../../../store/apiSlice';
-import { MdCreate } from 'react-icons/md';
 
 const ChatList = () => {
   const { isLoading, data } = apiSlice.useListChatsQuery({});

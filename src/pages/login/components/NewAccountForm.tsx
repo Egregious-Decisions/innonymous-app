@@ -76,7 +76,7 @@ const NewAccountForm = ({
             onChange={onPasswordChanged}
             isRequired
           />
-          <FormErrorMessage>Passwords don't match</FormErrorMessage>
+          <FormErrorMessage>Passwords don&#39;t match</FormErrorMessage>
         </FormControl>
         <Captcha />
         <FormControl isInvalid={!result?.ok}>

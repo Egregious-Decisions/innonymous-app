@@ -25,9 +25,9 @@ import {
 const { VITE_API_ROOT: API_ROOT } = import.meta.env;
 
 const eventSource = new EventSource(`${API_ROOT}/events`);
-const eventsInit = new Promise<void>((resolve) =>
-  eventSource.addEventListener('open', () => resolve()),
-);
+const eventsInit = new Promise<void>((resolve) => {
+  eventSource.addEventListener('open', () => resolve());
+});
 
 export const apiSlice = createApi({
   reducerPath: 'api',
@@ -46,24 +46,22 @@ export const apiSlice = createApi({
     receiveUpdates: builder.query<Event[], void>({
       queryFn: () => ({ data: [] }),
       onCacheEntryAdded: async (_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) => {
-        {
-          await cacheDataLoaded;
-          await eventsInit;
+        await cacheDataLoaded;
+        await eventsInit;
 
-          const listener = (message: MessageEvent) => {
-            const event = JSON.parse(message.data) as Event;
-            if (event.message === undefined) return;
+        const listener = (message: MessageEvent) => {
+          const event = JSON.parse(message.data) as Event;
+          if (event.message === undefined) return;
 
-            updateCachedData((draft) => {
-              draft.push(event);
-            });
-          };
+          updateCachedData((draft) => {
+            draft.push(event);
+          });
+        };
 
-          eventSource.addEventListener('message_created', listener);
-          await cacheEntryRemoved;
-          eventSource.removeEventListener('message_created', listener);
-          eventSource.close();
-        }
+        eventSource.addEventListener('message_created', listener);
+        await cacheEntryRemoved;
+        eventSource.removeEventListener('message_created', listener);
+        eventSource.close();
       },
     }),
     getCaptcha: builder.query<CaptchaTask, void>({

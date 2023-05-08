@@ -7,8 +7,8 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Chat } from '../../../../store/models';
 import { Link } from 'react-router-dom';
+import { Chat } from '../../../../store/models';
 import DateTime from '../../../../components/DateTime';
 
 const ChatItem = ({ chat }: { chat: Chat }) => {

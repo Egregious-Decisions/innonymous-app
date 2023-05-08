@@ -1,7 +1,7 @@
 import { Box, Flex, Hide, SystemStyleObject, useColorModeValue } from '@chakra-ui/react';
-import Menu from './components/menu/Menu';
 import { Outlet, useParams } from 'react-router-dom';
 import { useMemo } from 'react';
+import Menu from './components/menu/Menu';
 import Background from './components/chat_bg.jpg';
 
 const Chats = () => {

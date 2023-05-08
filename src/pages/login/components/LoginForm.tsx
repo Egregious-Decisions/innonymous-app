@@ -9,8 +9,8 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
-import ForgotLink from './ForgotLink';
 import { Form, useNavigate } from 'react-router-dom';
+import ForgotLink from './ForgotLink';
 import { aliasInputName, passwordInputName, useAppActionData } from '../../../actions/AppAction';
 
 const LoginForm = ({ newAccountUrl, actionUrl }: { newAccountUrl: string; actionUrl: string }) => {
