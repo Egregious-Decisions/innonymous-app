@@ -13,9 +13,9 @@ import { useRef, useCallback, useMemo, useState } from 'react';
 import { apiSlice, getErrorMessage } from '../../../store/apiSlice';
 import Captcha from '../../../components/Captcha';
 import { CaptchaSolution } from '../../../store/models';
-import { Form } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 
-const LoginForm = ({ onBackToLogin }: { onBackToLogin: () => void }) => {
+const LoginForm = ({ logInUrl }: { logInUrl: string }) => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmRef = useRef<HTMLInputElement>(null);
@@ -24,6 +24,7 @@ const LoginForm = ({ onBackToLogin }: { onBackToLogin: () => void }) => {
   const [createUser, { isError: isCreateError, error: createError }] =
     apiSlice.useCreateUserMutation();
   const [logIn, { isError: isLoginError, error: loginError }] = apiSlice.useCreateSessionMutation();
+  const navigate = useNavigate();
 
   const onCreateUser = useCallback(async () => {
     if (usernameRef.current === null || passwordRef.current === null || captcha == null) {
@@ -91,7 +92,7 @@ const LoginForm = ({ onBackToLogin }: { onBackToLogin: () => void }) => {
         <Divider padding={2} />
         <HStack>
           <Text>rember account?</Text>
-          <Button onClick={onBackToLogin}>back</Button>
+          <Button onClick={() => navigate(logInUrl)}>back</Button>
         </HStack>
       </VStack>
     </Form>

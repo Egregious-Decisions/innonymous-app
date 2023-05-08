@@ -11,12 +11,13 @@ import {
 import { useRef, useCallback, useMemo } from 'react';
 import { apiSlice, getErrorMessage } from '../../../store/apiSlice';
 import ForgotLink from './ForgotLink';
-import { Form } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 
-const LoginForm = ({ onNewAccount }: { onNewAccount: () => void }) => {
+const LoginForm = ({ newAccountUrl }: { newAccountUrl: string }) => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const [logIn, { error, isError }] = apiSlice.useCreateSessionMutation();
+  const navigate = useNavigate();
 
   const onLogIn = useCallback(async () => {
     if (usernameRef.current === null || passwordRef.current === null) {
@@ -47,7 +48,7 @@ const LoginForm = ({ onNewAccount }: { onNewAccount: () => void }) => {
         </HStack>
         <Divider paddingY={2} />
         <Text>no account yet?</Text>
-        <Button onClick={onNewAccount}>join the dark side</Button>
+        <Button onClick={() => navigate(newAccountUrl)}>join the dark side</Button>
       </VStack>
     </Form>
   );

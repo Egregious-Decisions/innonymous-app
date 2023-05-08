@@ -3,11 +3,12 @@ import Chats from './pages/chats/Chats';
 import Chat from './pages/chats/components/chat/Chat';
 import NoChatSelected from './pages/chats/components/chat/NoChatSelected';
 import Login from './pages/login/Login';
+import LoginForm from './pages/login/components/LoginForm';
+import NewAccountForm from './pages/login/components/NewAccountForm';
 
 export const authRoutes = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/login" element={<Navigate to="/" />} />
       <Route path="/" element={<Chats />}>
         <Route path=":id" element={<Chat />} />
         <Route index element={<NoChatSelected />} />
@@ -20,8 +21,11 @@ export const authRoutes = createBrowserRouter(
 export const noAuthRoutes = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/login" element={<Login />} />
-      <Route path="*" element={<Navigate to="/login" />} />
+      <Route path="/" element={<Login />}>
+        <Route index element={<LoginForm newAccountUrl="register" />} />
+        <Route path="register" element={<NewAccountForm logInUrl=".." />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" />} />
     </>,
   ),
 );
