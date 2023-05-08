@@ -1,13 +1,4 @@
-import {
-  BoxProps,
-  Button,
-  Flex,
-  Icon,
-  IconButton,
-  SkeletonText,
-  Spacer,
-  Text,
-} from '@chakra-ui/react';
+import { BoxProps, Button, Flex, Icon, SkeletonText, Spacer, Text } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import Header from '../Header';
 import ChatList from './ChatList';
@@ -15,6 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { useAppDispatch } from '../../../../store/store';
 import { authSlice } from '../../../login/authSlice';
 import { apiSlice } from '../../../../store/apiSlice';
+import { MdLogout, MdSettings } from 'react-icons/md';
 
 const Menu = (props: BoxProps) => {
   const dispatch = useAppDispatch();
@@ -36,7 +28,10 @@ const Menu = (props: BoxProps) => {
         <Icon as={FaUserAlt} />
         {username}
         <Spacer />
-        <Button onClick={onLogOut} colorScheme="red">
+        <Button leftIcon={<MdSettings />}>
+          <Text>settings</Text>
+        </Button>
+        <Button leftIcon={<MdLogout />} onClick={onLogOut} colorScheme="red">
           log out
         </Button>
       </Header>

@@ -8,37 +8,30 @@ import {
   FormControl,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import { useRef, useCallback, useMemo } from 'react';
-import { apiSlice, getErrorMessage } from '../../../store/apiSlice';
+import { useRef } from 'react';
 import ForgotLink from './ForgotLink';
 import { Form, useNavigate } from 'react-router-dom';
+import { aliasInputName, passwordInputName, useAppActionData } from '../../../actions/AppAction';
 
-const LoginForm = ({ newAccountUrl }: { newAccountUrl: string }) => {
+const LoginForm = ({ newAccountUrl, actionUrl }: { newAccountUrl: string; actionUrl: string }) => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [logIn, { error, isError }] = apiSlice.useCreateSessionMutation();
   const navigate = useNavigate();
-
-  const onLogIn = useCallback(async () => {
-    if (usernameRef.current === null || passwordRef.current === null) {
-      return;
-    }
-
-    await logIn({ alias: usernameRef.current.value, password: passwordRef.current.value });
-  }, [logIn]);
-
-  const errorMessage = useMemo(
-    () => (error !== undefined ? getErrorMessage(error, 'Invalid username or password.') : error),
-    [error],
-  );
+  const result = useAppActionData();
 
   return (
-    <Form onSubmit={onLogIn}>
+    <Form action={actionUrl} method="POST">
       <VStack>
-        <Input ref={usernameRef} placeholder="username" isRequired />
-        <Input ref={passwordRef} placeholder="password" isRequired type="password" />
-        <FormControl isInvalid={isError}>
-          <FormErrorMessage justifyContent="center">{errorMessage}</FormErrorMessage>
+        <Input name={aliasInputName} ref={usernameRef} placeholder="username" isRequired />
+        <Input
+          name={passwordInputName}
+          ref={passwordRef}
+          placeholder="password"
+          type="password"
+          isRequired
+        />
+        <FormControl isInvalid={!result?.ok}>
+          <FormErrorMessage justifyContent="center">{result?.error}</FormErrorMessage>
         </FormControl>
         <HStack>
           <ForgotLink />

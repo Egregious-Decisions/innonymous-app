@@ -1,11 +1,11 @@
-import { ChangeEvent, useCallback } from 'react';
+import { useCallback } from 'react';
 import { Center, HStack, Icon, IconButton, Image, Input, Spinner, VStack } from '@chakra-ui/react';
 import { apiSlice } from '../store/apiSlice';
-import { CaptchaSolution } from '../store/models';
 import { MdRefresh } from 'react-icons/md';
 import { useEffectOnce } from 'usehooks-ts';
+import { captchaSolutionInputName, captchaTokenInputName } from '../actions/AppAction';
 
-const Captcha = ({ onChange }: { onChange: (solution: CaptchaSolution) => void }) => {
+const Captcha = () => {
   const [fetch, { data, isFetching }] = apiSlice.useLazyGetCaptchaQuery();
 
   const loadCaptcha = useCallback(() => fetch(undefined, false), [fetch]);
@@ -13,17 +13,6 @@ const Captcha = ({ onChange }: { onChange: (solution: CaptchaSolution) => void }
   useEffectOnce(() => {
     loadCaptcha();
   });
-
-  const onInputChange = useCallback(
-    ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-      if (data === undefined) {
-        return;
-      }
-
-      onChange({ token: data.token, secret: value });
-    },
-    [data, onChange],
-  );
 
   return (
     <VStack>
@@ -36,7 +25,8 @@ const Captcha = ({ onChange }: { onChange: (solution: CaptchaSolution) => void }
         {!isFetching && data && <Image src={data.image} />}
         <IconButton onClick={loadCaptcha} icon={<Icon as={MdRefresh} />} aria-label="New captcha" />
       </HStack>
-      <Input onChange={onInputChange} placeholder="symbols from picture" isRequired />
+      <Input name={captchaSolutionInputName} placeholder="symbols from picture" isRequired />
+      <Input name={captchaTokenInputName} type="hidden" defaultValue={data?.token} />
     </VStack>
   );
 };
