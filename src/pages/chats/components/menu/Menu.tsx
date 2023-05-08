@@ -1,8 +1,8 @@
 import { Button, Flex, Icon, SkeletonText, Spacer, Text } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
-import { useCallback, useMemo, useEffect } from 'react';
 import { MdArrowBack, MdLogout, MdSettings } from 'react-icons/md';
 import { useSearchParams } from 'react-router-dom';
+import { useCallback, useMemo, useEffect } from 'react';
 import Header from '../Header';
 import ChatList from './ChatList';
 import { useAppDispatch } from '../../../../store/store';
