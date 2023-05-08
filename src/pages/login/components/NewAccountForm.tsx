@@ -21,7 +21,6 @@ const NewAccountForm = ({
   loginUrl: string;
   loginActionUrl: string;
 }) => {
-  const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmRef = useRef<HTMLInputElement>(null);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
@@ -47,7 +46,6 @@ const NewAccountForm = ({
         <FormControl>
           <Input
             name={aliasInputName}
-            ref={usernameRef}
             placeholder="username"
             minLength={5}
             maxLength={32}

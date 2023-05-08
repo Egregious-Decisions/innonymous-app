@@ -11,5 +11,8 @@ export const useAppActionData = () => useActionData() as AppActionResult | undef
 
 export const aliasInputName = 'alias';
 export const passwordInputName = 'password';
+export const oldPasswordInputName = 'old-password';
+export const nameInputName = 'name';
+export const aboutInputName = 'about';
 export const captchaTokenInputName = 'captcha-id';
 export const captchaSolutionInputName = 'captcha-secret';
