@@ -16,7 +16,7 @@ const ChatItem = ({ chat }: { chat: Chat }) => {
 
   return (
     <LinkBox _hover={{ background: hoverColor }}>
-      <LinkOverlay as={Link} to={chat.id}>
+      <LinkOverlay as={Link} to={chat.alias}>
         <Box padding="3">
           <HStack>
             <Text noOfLines={1}>{chat.name}</Text>

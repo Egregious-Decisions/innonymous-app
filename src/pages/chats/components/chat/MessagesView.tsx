@@ -1,126 +1,12 @@
-import { Stack, useColorModeValue } from '@chakra-ui/react';
+import { Box, Spinner, Stack, useColorModeValue } from '@chakra-ui/react';
 import MessageItem from './MessageItem';
-import { Message } from '../../../../store/models';
+import { apiSlice } from '../../../../store/apiSlice';
+import { Id } from '../../../../store/models';
 
-const messages: Message[] = [
-  {
-    id: 'a',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'b',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'c',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'd',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'e',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'f',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'g',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'h',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'i',
-    author: 'me',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'i1',
-    author: 'me',
-    chat: 'any',
-    body: {
-      data: 'kdo[wakok[pdk[pawkpk[dk[pwka[skfopcjoiehsoijfeicpkopaksopjpicjfpipiaspicfjpesjdoiovnfusdnuonvoinoeisnoifncoififosoinfoidsoioifj0asjoijficjipwaswjijfiojaipsjoifhoihasoihofdoisjiojoifjoasihoifhuohaoushofhcioshoihfcfoihaosihiofhdcioahsoihfijoiashoi',
-    },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'i2',
-    author: 'me',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'i3',
-    author: 'me',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'j',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'lol kek' },
-    updated_at: new Date('2023-05-03T17:04:27.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-  {
-    id: 'k',
-    author: 'bebra',
-    chat: 'any',
-    body: { data: 'NO EDIT' },
-    updated_at: new Date('2023-05-02T13:17:47.000Z'),
-    created_at: new Date('2023-05-02T13:17:47.000Z'),
-  },
-];
-
-const MessagesView = () => {
+const MessagesView = ({ chat }: { chat: Id }) => {
   const bgColor = useColorModeValue('blackAlpha.200', '');
+
+  const { data, isLoading } = apiSlice.useListMessagesQuery({ chat });
 
   return (
     <Stack
@@ -130,8 +16,10 @@ const MessagesView = () => {
       paddingX={2}
       overflowY="scroll"
       direction="column-reverse"
+      flex="1"
     >
-      {messages.map((message) => (
+      {isLoading && <Spinner size="xl" margin="auto" />}
+      {data?.messages.map((message) => (
         <MessageItem key={message.id} message={message} />
       ))}
     </Stack>

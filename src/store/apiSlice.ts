@@ -154,7 +154,7 @@ export const apiSlice = createApi({
       invalidatesTags: ['Chats'],
     }),
     listMessages: builder.query<
-      ObjectList<'message', Message>,
+      ObjectList<'messages', Message>,
       IdPathParameter<'chat'> & QueryFilter
     >({
       query: ({ chat, ...filter }) => ({

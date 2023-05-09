@@ -33,6 +33,7 @@ const Menu = () => {
         return <ChatList />;
     }
   }, [params]);
+
   const settingsButton = useMemo(
     () =>
       params.has('settings') ? (

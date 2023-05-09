@@ -9,11 +9,6 @@ import logIn from './actions/logIn';
 import createAccount from './actions/createAccount';
 import createChat from './actions/createChat';
 
-const defaultRoute: RouteObject = {
-  path: '*',
-  element: <Navigate to="/" />,
-};
-
 export const authRoutes = createBrowserRouter([
   {
     path: '/',
@@ -25,12 +20,11 @@ export const authRoutes = createBrowserRouter([
         element: <NoChatSelected />,
       },
       {
-        path: ':id',
+        path: ':chat',
         element: <Chat />,
       },
     ],
   },
-  defaultRoute,
 ]);
 
 export const noAuthRoutes = createBrowserRouter([
@@ -40,7 +34,7 @@ export const noAuthRoutes = createBrowserRouter([
     action: logIn,
     children: [
       {
-        index: true,
+        path: '*',
         element: <LoginForm newAccountUrl="/join" actionUrl=".." />,
       },
       {
@@ -50,5 +44,4 @@ export const noAuthRoutes = createBrowserRouter([
       },
     ],
   },
-  defaultRoute,
 ]);

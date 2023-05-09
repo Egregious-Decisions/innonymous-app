@@ -5,7 +5,11 @@ const Username = () => {
   const { isFetching, data } = apiSlice.useGetCurrentUserQuery();
 
   if (isFetching || data === undefined) {
-    return <SkeletonText>Username</SkeletonText>;
+    return (
+      <SkeletonText flex="1" noOfLines={2}>
+        Username
+      </SkeletonText>
+    );
   }
 
   if (data.name === '') {
