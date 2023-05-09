@@ -8,14 +8,16 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import MessageTime from './MessageTime';
-import { Message as MessageModel, MessageText } from '../../../../store/models';
+import { Message as MessageModel } from '../../../../store/models';
 import { apiSlice } from '../../../../store/apiSlice';
+import MessageBody from './MessageBody';
 
 const MessageItem = ({ message }: { message: MessageModel }) => {
   const headerColor = useColorModeValue('gray.800', 'gray.200');
   const messagesColor = useColorModeValue('gray.50', 'gray.700');
   const myMessagesColor = useColorModeValue('teal.100', 'teal.800');
   const { data } = apiSlice.useGetCurrentUserQuery();
+  const { data: authorData } = apiSlice.useGetUserQuery({ user: message.author });
 
   return (
     <Card
@@ -26,7 +28,7 @@ const MessageItem = ({ message }: { message: MessageModel }) => {
       <CardHeader padding={0} fontSize="sm" color={headerColor}>
         <HStack>
           <Text fontWeight="bold" noOfLines={1}>
-            {message.author}
+            {authorData?.name || authorData?.alias || message.author}
           </Text>
           <Spacer />
           <MessageTime
@@ -36,7 +38,7 @@ const MessageItem = ({ message }: { message: MessageModel }) => {
         </HStack>
       </CardHeader>
       <CardBody padding={0}>
-        <Text overflowWrap="anywhere">{(message.body as MessageText).data}</Text>
+        <MessageBody body={message.body} />
       </CardBody>
     </Card>
   );

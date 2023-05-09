@@ -71,8 +71,44 @@ export interface SessionInfo {
 
 export type SessionUpdate = Pick<Session, 'refresh_token'>;
 
+export interface MessageMention {
+  user: Id;
+  chat: Id;
+  type: 'message';
+}
+
+export interface ChatMention {
+  chat: Id;
+  type: 'chat';
+}
+
+export interface UserMention {
+  user: Id;
+  type: 'user';
+}
+
+export type Mention = MessageMention | UserMention | ChatMention;
+
+export interface MessageTextFragment {
+  text: string;
+  type: 'text';
+}
+
+export interface MessageLinkFragment {
+  text: string;
+  link: string;
+  type: 'link';
+}
+
+export interface MessageMentionFragment {
+  mention: Mention;
+  type: 'mention';
+}
+
+export type MessageFragment = MessageTextFragment | MessageLinkFragment | MessageMentionFragment;
+
 export interface MessageText {
-  data: string;
+  fragments: MessageFragment[];
   type: 'text';
 }
 
@@ -82,10 +118,12 @@ export interface MessageFiles {
   type: 'files';
 }
 
+export type MessageBody = MessageText | MessageFiles;
+
 export interface Message {
   chat: Id;
   author: Id;
-  body: MessageText | MessageFiles;
+  body: MessageBody;
   id: Id;
   replied_to?: Id;
   forwarded_from?: Id;
