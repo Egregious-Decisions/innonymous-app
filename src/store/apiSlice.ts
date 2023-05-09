@@ -88,8 +88,10 @@ export const apiSlice = createApi({
       providesTags: ['User'],
     }),
     updateCurrentUser: builder.mutation<UserPrivateInfo, UserUpdate>({
-      query: () => ({
+      query: (update) => ({
         url: '/users/me',
+        method: 'PATCH',
+        body: update,
       }),
       invalidatesTags: ['User'],
     }),
