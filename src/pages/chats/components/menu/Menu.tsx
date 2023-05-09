@@ -1,4 +1,4 @@
-import { Button, Flex, Icon, SkeletonText, Spacer, Text } from '@chakra-ui/react';
+import { Button, Flex, Icon, Text } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import { useCallback, useMemo, useEffect } from 'react';
 import { MdArrowBack, MdLogout, MdSettings } from 'react-icons/md';
@@ -7,7 +7,6 @@ import Header from '../Header';
 import ChatList from './ChatList';
 import { useAppDispatch } from '../../../../store/store';
 import { authSlice } from '../../../login/authSlice';
-import { apiSlice } from '../../../../store/apiSlice';
 import CreateChat from './CreateChat';
 import Settings from './Settings';
 import Username from './Username';

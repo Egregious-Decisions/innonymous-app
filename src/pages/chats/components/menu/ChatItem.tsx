@@ -25,7 +25,7 @@ const ChatItem = ({ chat }: { chat: Chat }) => {
             </Text>
             <Spacer />
             <Text minWidth="fit-content">
-              <DateTime time={chat.updated_at} format="chat_time" />
+              <DateTime time={new Date(chat.updated_at)} format="chat_time" />
             </Text>
           </HStack>
           <Text noOfLines={1}>{chat.about}</Text>

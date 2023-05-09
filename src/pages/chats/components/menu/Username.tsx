@@ -1,4 +1,4 @@
-import { Box, HStack, SkeletonText, Text, VStack } from '@chakra-ui/react';
+import { Box, SkeletonText, Text } from '@chakra-ui/react';
 import { apiSlice } from '../../../../store/apiSlice';
 
 const Username = () => {

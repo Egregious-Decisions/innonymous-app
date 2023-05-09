@@ -7,6 +7,7 @@ import LoginForm from './pages/login/components/LoginForm';
 import NewAccountForm from './pages/login/components/NewAccountForm';
 import logIn from './actions/logIn';
 import createAccount from './actions/createAccount';
+import createChat from './actions/createChat';
 
 const defaultRoute: RouteObject = {
   path: '*',
@@ -17,6 +18,7 @@ export const authRoutes = createBrowserRouter([
   {
     path: '/',
     element: <Chats />,
+    action: createChat,
     children: [
       {
         index: true,

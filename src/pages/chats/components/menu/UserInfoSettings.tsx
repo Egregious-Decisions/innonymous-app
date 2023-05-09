@@ -10,7 +10,7 @@ import {
   FormLabel,
   Text,
 } from '@chakra-ui/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import FormError from '../../../../components/FormError';
 import { apiSlice } from '../../../../store/apiSlice';
 
@@ -24,7 +24,7 @@ const UserInfoSettings = () => {
 
   const toast = useToast();
 
-  const onSave = async () => {
+  const onSave = useCallback(async () => {
     if (aliasRef.current === null || nameRef.current === null || aboutRef.current === null) {
       return;
     }
@@ -34,7 +34,7 @@ const UserInfoSettings = () => {
       about: aboutRef.current.value,
       name: nameRef.current.value,
     });
-  };
+  }, [updateUser]);
 
   useEffect(() => {
     if (isSuccess) {

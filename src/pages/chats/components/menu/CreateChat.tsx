@@ -29,9 +29,9 @@ const CreateChat = () => {
   const result = useAppActionData();
 
   return (
-    <Form method="POST">
-      <Card maxWidth="md" margin="auto">
-        <CardBody>
+    <Card maxWidth="md" alignSelf="center">
+      <CardBody>
+        <Form method="POST">
           <VStack>
             <FormControl>
               <Input
@@ -73,9 +73,9 @@ const CreateChat = () => {
               <Button onClick={() => setParams('')}>cancel</Button>
             </HStack>
           </VStack>
-        </CardBody>
-      </Card>
-    </Form>
+        </Form>
+      </CardBody>
+    </Card>
   );
 };
 

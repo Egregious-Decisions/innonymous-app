@@ -29,7 +29,7 @@ const PasswordSettings = () => {
 
   const toast = useToast();
 
-  const onSave = async () => {
+  const onSave = useCallback(async () => {
     if (oldRef.current === null || newRef.current === null) {
       return;
     }
@@ -37,7 +37,7 @@ const PasswordSettings = () => {
     await updateUser({
       password: { new: newRef.current.value, old: oldRef.current.value },
     });
-  };
+  }, [updateUser]);
 
   useEffect(() => {
     if (isSuccess) {

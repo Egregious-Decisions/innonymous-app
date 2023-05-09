@@ -29,7 +29,7 @@ export interface UserInfo {
   name: string;
   alias: string;
   about: string;
-  updated_at: Date;
+  updated_at: string;
 }
 
 export type UserPrivateInfo = UserInfo & {
@@ -50,11 +50,11 @@ export interface Chat {
   alias: string;
   name: string;
   about: string;
-  updated_at: Date;
+  updated_at: string;
 }
 
 export interface ChatCreateBody {
-  chat: Pick<Chat, 'alias'> & Partial<Pick<Chat, 'name' | 'about'>>;
+  info: Pick<Chat, 'alias'> & Partial<Pick<Chat, 'name' | 'about'>>;
   captcha: CaptchaSolution;
 }
 
@@ -66,7 +66,7 @@ export interface Session {
 export interface SessionInfo {
   id: Id;
   agent: string;
-  updated_at: Date;
+  updated_at: string;
 }
 
 export type SessionUpdate = Pick<Session, 'refresh_token'>;
@@ -89,8 +89,8 @@ export interface Message {
   id: Id;
   replied_to?: Id;
   forwarded_from?: Id;
-  updated_at: Date;
-  created_at: Date;
+  updated_at: string;
+  created_at: string;
 }
 
 export interface QueryFilter {

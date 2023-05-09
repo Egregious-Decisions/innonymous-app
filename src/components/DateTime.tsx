@@ -46,7 +46,7 @@ const DateTime = ({ time, format }: DateTimeProps) => {
       break;
   }
 
-  return formattedTime;
+  return <span>{formattedTime}</span>;
 };
 
 export default DateTime;
