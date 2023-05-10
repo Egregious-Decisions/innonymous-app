@@ -1,5 +1,5 @@
 import { Link, Text } from '@chakra-ui/react';
-import { MessageBody as BodyObject, MessageFragment } from '../../../../store/models';
+import { MessageBody as BodyObject, MessageFragment } from '../../../store/models';
 
 const fragmentToComponent = (fragment: MessageFragment) => {
   switch (fragment.type) {

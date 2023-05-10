@@ -11,9 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useEffect, useRef, useCallback } from 'react';
-import FormError from '../../../../components/FormError';
-import { apiSlice } from '../../../../store/apiSlice';
-import AutosizeTextarea from '../../../../components/AutosizeTextarea';
+import FormError from '../../../components/form/FormError';
+import { apiSlice } from '../../../store/apiSlice';
+import AutosizeTextarea from '../../../components/ui/AutosizeTextarea';
 
 const UserInfoSettings = () => {
   const aliasRef = useRef<HTMLInputElement>(null);

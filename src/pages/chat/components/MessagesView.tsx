@@ -1,8 +1,8 @@
 import { Spinner, Stack, useColorModeValue } from '@chakra-ui/react';
 import { forwardRef } from 'react';
 import MessageItem from './MessageItem';
-import { apiSlice } from '../../../../store/apiSlice';
-import { Id } from '../../../../store/models';
+import { Id } from '../../../store/models';
+import { apiSlice } from '../../../store/apiSlice';
 
 const MessagesView = forwardRef<HTMLDivElement, { chat: Id }>(({ chat }, ref) => {
   const bgColor = useColorModeValue('blackAlpha.200', '');

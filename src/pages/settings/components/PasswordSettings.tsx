@@ -10,8 +10,8 @@ import {
   FormHelperText,
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import FormError from '../../../../components/FormError';
-import { apiSlice } from '../../../../store/apiSlice';
+import FormError from '../../../components/form/FormError';
+import { apiSlice } from '../../../store/apiSlice';
 
 const PasswordSettings = () => {
   const oldRef = useRef<HTMLInputElement>(null);

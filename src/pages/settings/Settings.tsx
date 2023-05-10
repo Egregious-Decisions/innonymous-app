@@ -1,6 +1,6 @@
 import { Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import UserInfoSettings from './UserInfoSettings';
-import PasswordSettings from './PasswordSettings';
+import UserInfoSettings from './components/UserInfoSettings';
+import PasswordSettings from './components/PasswordSettings';
 
 const Settings = () => (
   <Tabs display="flex" flexDirection="column" flex="1" minHeight="0">

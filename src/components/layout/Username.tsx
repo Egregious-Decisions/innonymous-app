@@ -1,5 +1,5 @@
 import { Box, SkeletonText, Text } from '@chakra-ui/react';
-import { apiSlice } from '../../../../store/apiSlice';
+import { apiSlice } from '../../store/apiSlice';
 
 const Username = () => {
   const { isFetching, data } = apiSlice.useGetCurrentUserQuery();

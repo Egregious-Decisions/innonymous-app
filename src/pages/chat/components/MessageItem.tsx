@@ -8,11 +8,11 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import MessageTime from './MessageTime';
-import { Message as MessageModel } from '../../../../store/models';
-import { apiSlice } from '../../../../store/apiSlice';
 import MessageBody from './MessageBody';
+import { apiSlice } from '../../../store/apiSlice';
+import { Message } from '../../../store/models';
 
-const MessageItem = ({ message }: { message: MessageModel }) => {
+const MessageItem = ({ message }: { message: Message }) => {
   const headerColor = useColorModeValue('gray.800', 'gray.200');
   const messagesColor = useColorModeValue('gray.50', 'gray.700');
   const myMessagesColor = useColorModeValue('teal.100', 'teal.800');

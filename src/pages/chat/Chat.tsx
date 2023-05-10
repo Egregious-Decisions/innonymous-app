@@ -2,10 +2,10 @@ import { Center, Flex, Icon, IconButton, Spinner, Text } from '@chakra-ui/react'
 import { BiArrowBack } from 'react-icons/bi';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useMemo, useRef } from 'react';
-import Header from '../Header';
-import MessagesView from './MessagesView';
-import { apiSlice } from '../../../../store/apiSlice';
-import MessageInput from './MessageInput';
+import Header from '../../components/layout/Header';
+import { apiSlice } from '../../store/apiSlice';
+import MessagesView from './components/MessagesView';
+import MessageInput from './components/MessageInput';
 
 const Chat = () => {
   const navigate = useNavigate();

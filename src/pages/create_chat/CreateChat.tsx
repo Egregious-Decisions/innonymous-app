@@ -20,9 +20,9 @@ import {
   aliasInputName,
   nameInputName,
   useAppActionData,
-} from '../../../../actions/AppAction';
-import Captcha from '../../../../components/Captcha';
-import AutosizeTextarea from '../../../../components/AutosizeTextarea';
+} from '../../actions/AppAction';
+import Captcha from '../../components/form/Captcha';
+import AutosizeTextarea from '../../components/ui/AutosizeTextarea';
 
 const CreateChat = () => {
   const aliasRef = useRef<HTMLInputElement>(null);

@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { Center, HStack, Icon, IconButton, Image, Input, Spinner, VStack } from '@chakra-ui/react';
 import { MdRefresh } from 'react-icons/md';
 import { useEffectOnce } from 'usehooks-ts';
-import { apiSlice } from '../store/apiSlice';
-import { captchaSolutionInputName, captchaTokenInputName } from '../actions/AppAction';
+import { captchaSolutionInputName, captchaTokenInputName } from '../../actions/AppAction';
+import { apiSlice } from '../../store/apiSlice';
 
 const Captcha = () => {
   const [fetch, { data, isFetching }] = apiSlice.useLazyGetCaptchaQuery();

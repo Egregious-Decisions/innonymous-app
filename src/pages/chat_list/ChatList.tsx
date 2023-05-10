@@ -2,7 +2,7 @@ import { Divider, Spinner, VStack, Button, Icon } from '@chakra-ui/react';
 import { MdCreate } from 'react-icons/md';
 import { useSearchParams } from 'react-router-dom';
 import ChatItem from './ChatItem';
-import { apiSlice } from '../../../../store/apiSlice';
+import { apiSlice } from '../../store/apiSlice';
 
 const ChatList = () => {
   const [_, setParams] = useSearchParams();

@@ -8,8 +8,8 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { Chat } from '../../../../store/models';
-import DateTime from '../../../../components/DateTime';
+import { Chat } from '../../store/models';
+import DateTime from '../../components/ui/DateTime';
 
 const ChatItem = ({ chat }: { chat: Chat }) => {
   const hoverColor = useColorModeValue('gray.100', 'gray.700');

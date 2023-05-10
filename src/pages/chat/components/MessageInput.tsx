@@ -1,9 +1,9 @@
 import { HStack, IconButton, Icon } from '@chakra-ui/react';
 import { useCallback, useRef, KeyboardEvent, useEffect } from 'react';
 import { MdAdd, MdSend } from 'react-icons/md';
-import AutosizeTextarea from '../../../../components/AutosizeTextarea';
-import { apiSlice } from '../../../../store/apiSlice';
-import { Id } from '../../../../store/models';
+import AutosizeTextarea from '../../../components/ui/AutosizeTextarea';
+import { apiSlice } from '../../../store/apiSlice';
+import { Id } from '../../../store/models';
 
 const MessageInput = ({
   chat,

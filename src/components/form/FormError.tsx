@@ -1,7 +1,7 @@
 import { FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { SerializedError } from '@reduxjs/toolkit';
-import { getErrorMessage } from '../store/apiSlice';
+import { getErrorMessage } from '../../store/apiSlice';
 
 const FormError = ({
   error,

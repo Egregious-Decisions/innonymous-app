@@ -3,13 +3,13 @@ import { FaUserAlt } from 'react-icons/fa';
 import { useCallback, useMemo, useEffect } from 'react';
 import { MdArrowBack, MdLogout, MdSettings } from 'react-icons/md';
 import { useSearchParams } from 'react-router-dom';
-import Header from '../Header';
-import ChatList from './ChatList';
-import { useAppDispatch } from '../../../../store/store';
-import { authSlice } from '../../../login/authSlice';
-import CreateChat from './CreateChat';
-import Settings from './Settings';
+import Header from './Header';
+import { useAppDispatch } from '../../store/store';
+import { authSlice } from '../../pages/login/authSlice';
+import ChatList from '../../pages/chat_list/ChatList';
+import Settings from '../../pages/settings/Settings';
 import Username from './Username';
+import CreateChat from '../../pages/create_chat/CreateChat';
 
 const Menu = () => {
   const dispatch = useAppDispatch();

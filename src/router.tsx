@@ -1,7 +1,7 @@
-import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
-import Chats from './pages/chats/Chats';
-import Chat from './pages/chats/components/chat/Chat';
-import NoChatSelected from './pages/chats/components/chat/NoChatSelected';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import Chat from './pages/chat/Chat';
+import NoChatSelected from './pages/chat/NoChatSelected';
 import Login from './pages/login/Login';
 import LoginForm from './pages/login/components/LoginForm';
 import NewAccountForm from './pages/login/components/NewAccountForm';
@@ -12,7 +12,7 @@ import createChat from './actions/createChat';
 export const authRoutes = createBrowserRouter([
   {
     path: '/',
-    element: <Chats />,
+    element: <Layout />,
     action: createChat,
     children: [
       {
