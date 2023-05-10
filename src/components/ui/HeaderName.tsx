@@ -1,33 +1,36 @@
 import { Box, SkeletonText, Text } from '@chakra-ui/react';
-import { apiSlice } from '../../store/apiSlice';
 
-const Username = () => {
-  const { isFetching, data } = apiSlice.useGetCurrentUserQuery();
+export interface HeaderNameProps {
+  isLoading: boolean;
+  name: string;
+  alias: string;
+}
 
-  if (isFetching || data === undefined) {
+const HeaderName = ({ isLoading, name, alias }: HeaderNameProps) => {
+  if (isLoading) {
     return (
       <SkeletonText flex="1" noOfLines={2}>
-        Username
+        entity name
       </SkeletonText>
     );
   }
 
-  if (data.name === '') {
+  if (name === '') {
     return (
       <Text noOfLines={1} flex="1">
-        {data.alias}
+        {alias}
       </Text>
     );
   }
 
   return (
     <Box width="0" flex="1">
-      <Text noOfLines={1}>{data.name}</Text>
+      <Text noOfLines={1}>{name}</Text>
       <Text noOfLines={1} color="gray">
-        {data.alias}
+        {alias}
       </Text>
     </Box>
   );
 };
 
-export default Username;
+export default HeaderName;

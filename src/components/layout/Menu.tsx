@@ -8,12 +8,15 @@ import { useAppDispatch } from '../../store/store';
 import { authSlice } from '../../pages/login/authSlice';
 import ChatList from '../../pages/chat_list/ChatList';
 import Settings from '../../pages/settings/Settings';
-import Username from './Username';
+import HeaderName from '../ui/HeaderName';
 import CreateChat from '../../pages/create_chat/CreateChat';
+import { apiSlice } from '../../store/apiSlice';
+import { UserPrivateInfo } from '../../store/models';
 
 const Menu = () => {
   const dispatch = useAppDispatch();
   const [params, setParams] = useSearchParams();
+  const { data, isLoading } = apiSlice.useGetCurrentUserQuery();
 
   const onLogOut = useCallback(() => dispatch(authSlice.actions.clearTokens()), [dispatch]);
 
@@ -34,6 +37,11 @@ const Menu = () => {
     }
   }, [params]);
 
+  const { name, alias } = useMemo<Pick<UserPrivateInfo, 'name' | 'alias'>>(
+    () => data || { name: '', alias: '' },
+    [data],
+  );
+
   const settingsButton = useMemo(
     () =>
       params.has('settings') ? (
@@ -53,7 +61,7 @@ const Menu = () => {
     <Flex flex="1" minHeight="0" direction="column" alignItems="stretch">
       <Header>
         <Icon as={FaUserAlt} />
-        <Username />
+        <HeaderName {...{ isLoading, name, alias }} />
         {settingsButton}
         <Button leftIcon={<MdLogout />} onClick={onLogOut} colorScheme="red">
           log out

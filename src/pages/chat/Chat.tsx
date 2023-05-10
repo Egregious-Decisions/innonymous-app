@@ -6,6 +6,7 @@ import Header from '../../components/layout/Header';
 import { apiSlice } from '../../store/apiSlice';
 import MessagesView from './components/MessagesView';
 import MessageInput from './components/MessageInput';
+import HeaderName from '../../components/ui/HeaderName';
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const Chat = () => {
           icon={<Icon as={BiArrowBack} />}
           onClick={() => navigate('..')}
         />
-        <Text>{chat.name}</Text>
+        <HeaderName isLoading={isLoading} name={chat.name} alias={chat.alias} />
       </Header>
       <MessagesView ref={viewRef} chat={chat.id} />
       <MessageInput chat={chat.id} onMessageSent={onMessageSent} />
