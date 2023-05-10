@@ -13,9 +13,9 @@ const App = () => {
     authInitialState,
   );
 
-  const isAuthenticated = auth.token !== '';
+  const noAuth = auth.token === '';
 
-  return <RouterProvider router={isAuthenticated ? authRoutes : noAuthRoutes} />;
+  return <RouterProvider router={noAuth ? noAuthRoutes : authRoutes} />;
 };
 
 export default App;
