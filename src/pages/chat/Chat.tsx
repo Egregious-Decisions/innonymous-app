@@ -13,7 +13,7 @@ const Chat = () => {
   const viewRef = useRef<HTMLDivElement>(null);
 
   const { chat: alias } = useParams();
-  const { data: chats, isLoading } = apiSlice.useListChatsQuery({});
+  const { data: chats, isLoading, isFetching } = apiSlice.useListChatsQuery({});
 
   const chat = useMemo(() => chats?.chats.findLast((item) => item.alias === alias), [alias, chats]);
 
@@ -22,7 +22,7 @@ const Chat = () => {
     [],
   );
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <Center height="100%">
         <Spinner size="xl" margin="auto" />

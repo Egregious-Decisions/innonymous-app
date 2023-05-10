@@ -1,11 +1,5 @@
 import { SerializedError } from '@reduxjs/toolkit';
-import {
-  BaseQueryFn,
-  createApi,
-  FetchArgs,
-  fetchBaseQuery,
-  FetchBaseQueryError,
-} from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import {
   Credentials,
   Chat,
@@ -28,7 +22,7 @@ import {
   CaptchaTask,
 } from './models';
 import type { RootState } from './store';
-import { clearTokens, setTokens } from '../pages/login/authSlice';
+import { authFailed, authRenewed } from './actions';
 
 const { VITE_API_ROOT: API_ROOT } = import.meta.env;
 
@@ -37,68 +31,60 @@ const eventsInit = new Promise<void>((resolve) => {
   eventSource.addEventListener('open', () => resolve());
 });
 
-const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
-  args,
-  api,
-  extraOptions,
-) => {
-  const queryWithAuth = fetchBaseQuery({
-    baseUrl: API_ROOT,
-    prepareHeaders: (headers) => {
-      const {
-        auth: { token },
-      } = api.getState() as RootState;
-      if (token !== '') {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  });
-
-  const originalQuery = async () => queryWithAuth(args, api, extraOptions);
-  let response = await originalQuery();
-  if (response.error?.status !== 401) {
-    return response;
-  }
-
-  const {
-    auth: { refresh },
-  } = api.getState() as RootState;
-
-  if (refresh === '') {
-    api.dispatch(clearTokens());
-    return response;
-  }
-
-  const update: SessionUpdate = { refresh_token: refresh };
-
-  const authResponse = await queryWithAuth(
-    {
-      url: '/sessions',
-      method: 'PATCH',
-      body: update,
-    },
-    api,
-    extraOptions,
-  );
-
-  if (authResponse.error) {
-    api.dispatch(clearTokens());
-    return response;
-  }
-
-  const { access_token, refresh_token } = authResponse.data as Session;
-
-  api.dispatch(setTokens({ token: access_token, refresh: refresh_token }));
-
-  response = await originalQuery();
-  return response;
-};
-
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery,
-  tagTypes: ['Session', 'User', 'Chats', 'Messages'],
+  baseQuery: async (args, api, extraOptions) => {
+    const queryWithAuth = fetchBaseQuery({
+      baseUrl: API_ROOT,
+      prepareHeaders: (headers) => {
+        const {
+          auth: { access_token },
+        } = api.getState() as RootState;
+        if (access_token) {
+          headers.set('Authorization', `Bearer ${access_token}`);
+        }
+        return headers;
+      },
+    });
+
+    const originalQuery = async () => queryWithAuth(args, api, extraOptions);
+    let response = await originalQuery();
+    if (response.error?.status !== 401) {
+      return response;
+    }
+
+    const {
+      auth: { refresh_token },
+    } = api.getState() as RootState;
+
+    if (!refresh_token || api.endpoint === 'updateSession') {
+      api.dispatch(authFailed());
+      return response;
+    }
+
+    const update: SessionUpdate = { refresh_token };
+
+    const authResponse = await queryWithAuth(
+      {
+        url: '/sessions',
+        method: 'PATCH',
+        body: update,
+      },
+      api,
+      extraOptions,
+    );
+
+    if (authResponse.error) {
+      api.dispatch(authFailed());
+      return response;
+    }
+
+    api.dispatch(authRenewed(authResponse.data as Session));
+
+    response = await originalQuery();
+    return response;
+  },
+  tagTypes: ['chat', 'user', 'message'],
   endpoints: (builder) => ({
     receiveUpdates: builder.query<Event[], void>({
       queryFn: () => ({ data: [] }),
@@ -142,7 +128,13 @@ export const apiSlice = createApi({
       query: () => ({
         url: '/users/me',
       }),
-      providesTags: ['User'],
+      providesTags: (result) =>
+        result
+          ? [
+              { type: 'user', id: result.id },
+              { type: 'user', id: 'me' },
+            ]
+          : [],
     }),
     updateCurrentUser: builder.mutation<UserPrivateInfo, UserUpdate>({
       query: (update) => ({
@@ -150,14 +142,14 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: update,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: [{ type: 'user', id: 'me' }],
     }),
     deleteCurrentUser: builder.mutation<null, void>({
       query: () => ({
         url: '/users/me',
         method: 'DELETE',
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: [{ type: 'user', id: 'me' }],
     }),
     createSession: builder.mutation<Session, Credentials>({
       query: (credentials) => ({
@@ -165,7 +157,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: credentials,
       }),
-      invalidatesTags: ['Session', 'User', 'Chats', 'Messages'],
+      invalidatesTags: ['user', 'chat', 'message'],
     }),
     updateSession: builder.mutation<Session, SessionUpdate>({
       query: (update) => ({
@@ -173,31 +165,27 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: update,
       }),
-      invalidatesTags: ['Session'],
     }),
     getSessions: builder.query<ObjectList<'sessions', SessionInfo>, void>({
       query: () => ({
         url: '/sessions',
       }),
-      providesTags: ['Session'],
     }),
     deleteSession: builder.mutation<void, IdPathParameter<'session'>>({
       query: ({ session }) => ({
         url: `/sessions/${session}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Session'],
     }),
     deleteAllSessions: builder.mutation<null, void>({
       query: () => ({
         url: '/sessions',
         method: 'DELETE',
       }),
-      invalidatesTags: ['Session'],
     }),
     listChats: builder.query<ObjectList<'chats', Chat>, QueryFilter>({
       query: (filter) => ({ url: '/chats', params: filter }),
-      providesTags: ['Chats'],
+      providesTags: (result) => result?.chats.map(({ id }) => ({ type: 'chat', id })) ?? [],
     }),
     getChat: builder.query<Chat, IdPathParameter<'chat'>>({
       query: ({ chat }) => ({ url: `/chats/${chat}` }),
@@ -208,7 +196,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: chat,
       }),
-      invalidatesTags: ['Chats'],
+      invalidatesTags: (_, error) => (error ? [] : ['chat']),
     }),
     listMessages: builder.query<
       ObjectList<'messages', Message>,
@@ -218,7 +206,7 @@ export const apiSlice = createApi({
         url: `/chats/${chat}/messages`,
         params: filter,
       }),
-      providesTags: ['Messages'],
+      providesTags: (result) => result?.messages.map(({ id }) => ({ type: 'message', id })) ?? [],
     }),
     getMessage: builder.query<Message, IdPathParameter<'chat' | 'message'>>({
       query: ({ chat, ...message }) => ({
@@ -231,7 +219,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: message,
       }),
-      invalidatesTags: ['Messages'],
+      invalidatesTags: ['message'],
     }),
     updateMessage: builder.mutation<null, MessageUpdate & IdPathParameter<'chat' | 'message'>>({
       query: ({ chat, message, ...update }) => ({
@@ -239,14 +227,14 @@ export const apiSlice = createApi({
         method: 'POST',
         body: update,
       }),
-      invalidatesTags: ['Messages'],
+      invalidatesTags: ['message'],
     }),
     deleteMessage: builder.mutation<null, IdPathParameter<'message' | 'chat'>>({
       query: ({ chat, message }) => ({
         url: `/chats/${chat}/messages/${message}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Messages'],
+      invalidatesTags: ['message'],
     }),
   }),
 });

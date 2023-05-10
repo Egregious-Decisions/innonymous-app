@@ -5,20 +5,20 @@ import { MdArrowBack, MdLogout, MdSettings } from 'react-icons/md';
 import { useSearchParams } from 'react-router-dom';
 import Header from './Header';
 import { useAppDispatch } from '../../store/store';
-import { authSlice } from '../../pages/login/authSlice';
 import ChatList from '../../pages/chat_list/ChatList';
 import Settings from '../../pages/settings/Settings';
 import HeaderName from '../ui/HeaderName';
 import CreateChat from '../../pages/create_chat/CreateChat';
 import { apiSlice } from '../../store/apiSlice';
 import { UserPrivateInfo } from '../../store/models';
+import { authLogout } from '../../store/actions';
 
 const Menu = () => {
   const dispatch = useAppDispatch();
   const [params, setParams] = useSearchParams();
   const { data, isLoading } = apiSlice.useGetCurrentUserQuery();
 
-  const onLogOut = useCallback(() => dispatch(authSlice.actions.clearTokens()), [dispatch]);
+  const onLogOut = useCallback(() => dispatch(authLogout()), [dispatch]);
 
   useEffect(() => {
     if (params.size > 1) {
