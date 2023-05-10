@@ -56,7 +56,6 @@ const MessageInput = ({
         onKeyDown={sendOnEnter}
         ref={messageRef}
         placeholder="Message text"
-        maxHeight="32"
         paddingY={2}
       />
       <IconButton

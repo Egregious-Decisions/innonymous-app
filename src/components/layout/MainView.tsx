@@ -20,7 +20,7 @@ const MainView = () => {
   );
 
   return (
-    <Box flex="2" position="relative" _before={background}>
+    <Box width="0" flex="2" position="relative" _before={background}>
       <Outlet />
     </Box>
   );

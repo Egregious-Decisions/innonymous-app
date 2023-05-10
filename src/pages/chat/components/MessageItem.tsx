@@ -23,7 +23,7 @@ const MessageItem = ({ message }: { message: Message }) => {
     <Card
       padding={2}
       background={message.author === data?.id ? myMessagesColor : messagesColor}
-      maxWidth="xl"
+      maxWidth={['xs', 'sm', null, 'md', 'lg']}
     >
       <CardHeader padding={0} fontSize="sm" color={headerColor}>
         <HStack>

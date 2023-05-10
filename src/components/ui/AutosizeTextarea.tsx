@@ -9,6 +9,7 @@ const AutosizeTextarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, 
     resize="none"
     ref={ref}
     minRows={1}
+    maxRows={5}
     as={ResizeTextarea}
     // eslint-disable-next-line react/jsx-props-no-spreading
     {...props}

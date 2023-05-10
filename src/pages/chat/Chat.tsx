@@ -1,4 +1,4 @@
-import { Center, Flex, Icon, IconButton, Spinner, Text } from '@chakra-ui/react';
+import { Center, Flex, Icon, IconButton, Spinner } from '@chakra-ui/react';
 import { BiArrowBack } from 'react-icons/bi';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useMemo, useRef } from 'react';

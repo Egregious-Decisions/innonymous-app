@@ -25,7 +25,11 @@ const MessageBody = ({ body }: { body: BodyObject }) => {
     );
   }
 
-  return <Text overflowWrap="anywhere">{body.fragments.map(fragmentToComponent)}</Text>;
+  return (
+    <Text overflowWrap="anywhere" maxWidth="100%">
+      {body.fragments.map(fragmentToComponent)}
+    </Text>
+  );
 };
 
 export default MessageBody;
