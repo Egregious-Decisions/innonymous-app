@@ -1,7 +1,6 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit';
-import { apiSlice } from '../../store/apiSlice';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface AuthState {
+export interface AuthState {
   token: string;
   refresh: string;
 }
@@ -18,18 +17,6 @@ export const authSlice = createSlice({
     setTokens: (state, { payload }: PayloadAction<AuthState>) => ({ ...state, ...payload }),
     clearTokens: (state) => ({ ...state, token: '', refresh: '' }),
   },
-  extraReducers: (builder) =>
-    builder.addMatcher(
-      isAnyOf(
-        apiSlice.endpoints.createSession.matchFulfilled,
-        apiSlice.endpoints.updateSession.matchFulfilled,
-      ),
-      (state, { payload }) => ({
-        ...state,
-        token: payload.access_token,
-        refresh: payload.refresh_token,
-      }),
-    ),
 });
 
 export const { setTokens, clearTokens } = authSlice.actions;

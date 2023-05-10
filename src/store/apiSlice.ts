@@ -1,5 +1,11 @@
 import { SerializedError } from '@reduxjs/toolkit';
-import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
+import {
+  BaseQueryFn,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+} from '@reduxjs/toolkit/query/react';
 import {
   Credentials,
   Chat,
@@ -21,6 +27,8 @@ import {
   Event,
   CaptchaTask,
 } from './models';
+import type { RootState } from './store';
+import { clearTokens, setTokens } from '../pages/login/authSlice';
 
 const { VITE_API_ROOT: API_ROOT } = import.meta.env;
 
@@ -29,18 +37,67 @@ const eventsInit = new Promise<void>((resolve) => {
   eventSource.addEventListener('open', () => resolve());
 });
 
-export const apiSlice = createApi({
-  reducerPath: 'api',
-  baseQuery: fetchBaseQuery({
+const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions,
+) => {
+  const queryWithAuth = fetchBaseQuery({
     baseUrl: API_ROOT,
-    prepareHeaders: (headers, { getState }) => {
-      const { token } = (getState() as { auth: { token: string } }).auth;
+    prepareHeaders: (headers) => {
+      const {
+        auth: { token },
+      } = api.getState() as RootState;
       if (token !== '') {
         headers.set('Authorization', `Bearer ${token}`);
       }
       return headers;
     },
-  }),
+  });
+
+  const originalQuery = async () => queryWithAuth(args, api, extraOptions);
+  let response = await originalQuery();
+  if (response.error?.status !== 401) {
+    return response;
+  }
+
+  const {
+    auth: { refresh },
+  } = api.getState() as RootState;
+
+  if (refresh === '') {
+    api.dispatch(clearTokens());
+    return response;
+  }
+
+  const update: SessionUpdate = { refresh_token: refresh };
+
+  const authResponse = await queryWithAuth(
+    {
+      url: '/sessions',
+      method: 'PATCH',
+      body: update,
+    },
+    api,
+    extraOptions,
+  );
+
+  if (authResponse.error) {
+    api.dispatch(clearTokens());
+    return response;
+  }
+
+  const { access_token, refresh_token } = authResponse.data as Session;
+
+  api.dispatch(setTokens({ token: access_token, refresh: refresh_token }));
+
+  response = await originalQuery();
+  return response;
+};
+
+export const apiSlice = createApi({
+  reducerPath: 'api',
+  baseQuery,
   tagTypes: ['Session', 'User', 'Chats', 'Messages'],
   endpoints: (builder) => ({
     receiveUpdates: builder.query<Event[], void>({

@@ -34,13 +34,17 @@ export const noAuthRoutes = createBrowserRouter([
     action: logIn,
     children: [
       {
-        path: '*',
+        index: true,
         element: <LoginForm newAccountUrl="/join" actionUrl=".." />,
       },
       {
         path: 'join',
         element: <NewAccountForm loginUrl="/" loginActionUrl=".." />,
         action: createAccount,
+      },
+      {
+        path: '*',
+        element: <Navigate to="/" />,
       },
     ],
   },
