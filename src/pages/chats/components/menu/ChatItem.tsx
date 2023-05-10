@@ -15,7 +15,7 @@ const ChatItem = ({ chat }: { chat: Chat }) => {
   const hoverColor = useColorModeValue('gray.100', 'gray.700');
 
   return (
-    <LinkBox _hover={{ background: hoverColor }}>
+    <LinkBox _hover={{ background: hoverColor }} width="0" minWidth="100%">
       <LinkOverlay as={Link} to={chat.alias}>
         <Box padding="3">
           <HStack>

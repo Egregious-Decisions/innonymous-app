@@ -13,11 +13,12 @@ import {
 import { useEffect, useRef, useCallback } from 'react';
 import FormError from '../../../../components/FormError';
 import { apiSlice } from '../../../../store/apiSlice';
+import AutosizeTextarea from '../../../../components/AutosizeTextarea';
 
 const UserInfoSettings = () => {
   const aliasRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
-  const aboutRef = useRef<HTMLInputElement>(null);
+  const aboutRef = useRef<HTMLTextAreaElement>(null);
   const { data } = apiSlice.useGetCurrentUserQuery();
   const [updateUser, { isError, error, isLoading, isSuccess }] =
     apiSlice.useUpdateCurrentUserMutation();
@@ -44,7 +45,7 @@ const UserInfoSettings = () => {
 
   return (
     <VStack>
-      <Card>
+      <Card minWidth="sm">
         <CardBody>
           <FormControl>
             <FormLabel>Username (alias)</FormLabel>
@@ -65,7 +66,7 @@ const UserInfoSettings = () => {
         </CardBody>
       </Card>
 
-      <Card>
+      <Card minWidth="sm">
         <CardBody>
           <FormControl>
             <FormLabel>Display name</FormLabel>
@@ -79,16 +80,21 @@ const UserInfoSettings = () => {
           </FormControl>
         </CardBody>
       </Card>
-      <Card>
+      <Card minWidth="sm">
         <CardBody>
           <FormControl>
             <FormLabel>About</FormLabel>
-            <Input ref={aboutRef} placeholder="about" maxLength={128} defaultValue={data?.about} />
+            <AutosizeTextarea
+              ref={aboutRef}
+              placeholder="about"
+              maxLength={128}
+              defaultValue={data?.about}
+            />
             <FormHelperText>optional, up to 128 symbols</FormHelperText>
           </FormControl>
         </CardBody>
       </Card>
-      <FormError validationError="Invalid alias" {...{ isError, error }} />
+      <FormError validationError="Invalid alias or description" {...{ isError, error }} />
       <Button onClick={onSave} colorScheme="teal" isLoading={isLoading}>
         save
       </Button>

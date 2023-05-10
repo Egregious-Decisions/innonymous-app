@@ -13,6 +13,7 @@ import {
   HStack,
   Input,
   VStack,
+  Text,
 } from '@chakra-ui/react';
 import {
   aboutInputName,
@@ -21,6 +22,7 @@ import {
   useAppActionData,
 } from '../../../../actions/AppAction';
 import Captcha from '../../../../components/Captcha';
+import AutosizeTextarea from '../../../../components/AutosizeTextarea';
 
 const CreateChat = () => {
   const aliasRef = useRef<HTMLInputElement>(null);
@@ -29,7 +31,7 @@ const CreateChat = () => {
   const result = useAppActionData();
 
   return (
-    <Card maxWidth="md" alignSelf="center">
+    <Card maxWidth="sm" alignSelf="center">
       <CardBody>
         <Form method="POST">
           <VStack>
@@ -49,11 +51,11 @@ const CreateChat = () => {
               </FormHelperText>
             </FormControl>
             <FormControl>
-              <Input name={nameInputName} placeholder="chat name" />
+              <Input name={nameInputName} placeholder="chat name" maxLength={64} />
               <FormHelperText>optional, up to 64 symbols</FormHelperText>
             </FormControl>
             <FormControl>
-              <Input name={aboutInputName} placeholder="about" />
+              <AutosizeTextarea name={aboutInputName} placeholder="about" maxLength={128} />
               <FormHelperText>optional, up to 128 symbols</FormHelperText>
             </FormControl>
             <Captcha />
@@ -63,7 +65,8 @@ const CreateChat = () => {
             <Alert status="info">
               <AlertIcon />
               <AlertDescription>
-                You will not be able to edit this information later.
+                <Text>Chat info can&#39;t be edited later.</Text>
+                <Text>Chat can&#39;t be deleted manually.</Text>
               </AlertDescription>
             </Alert>
             <HStack>

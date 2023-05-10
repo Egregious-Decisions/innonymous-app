@@ -46,7 +46,7 @@ const PasswordSettings = () => {
   }, [toast, isSuccess]);
 
   return (
-    <Card maxWidth="md" margin="auto">
+    <Card maxWidth="sm" margin="auto">
       <CardBody>
         <VStack>
           <Input ref={oldRef} placeholder="old" type="password" isRequired />
