@@ -1,20 +1,25 @@
-import { Center, Flex, HStack, Icon, IconButton, Spinner, Text } from '@chakra-ui/react';
+import { Center, Flex, Icon, IconButton, Spinner, Text } from '@chakra-ui/react';
 import { BiArrowBack } from 'react-icons/bi';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { MdAdd, MdSend } from 'react-icons/md';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import Header from '../Header';
 import MessagesView from './MessagesView';
-import AutosizeTextarea from '../../../../components/AutosizeTextarea';
 import { apiSlice } from '../../../../store/apiSlice';
+import MessageInput from './MessageInput';
 
 const Chat = () => {
   const navigate = useNavigate();
+  const viewRef = useRef<HTMLDivElement>(null);
 
   const { chat: alias } = useParams();
   const { data: chats, isLoading } = apiSlice.useListChatsQuery({});
 
   const chat = useMemo(() => chats?.chats.findLast((item) => item.alias === alias), [alias, chats]);
+
+  const onMessageSent = useCallback(
+    () => viewRef.current?.scrollTo({ top: viewRef.current?.scrollHeight, behavior: 'smooth' }),
+    [],
+  );
 
   if (isLoading) {
     return (
@@ -38,12 +43,8 @@ const Chat = () => {
         />
         <Text>{chat.name}</Text>
       </Header>
-      <MessagesView chat={chat.id} />
-      <HStack background="panel-bg" padding={2} alignItems="end">
-        <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
-        <AutosizeTextarea placeholder="Message text" maxHeight="32" paddingY={2} />
-        <IconButton colorScheme="teal" aria-label="Send message" icon={<Icon as={MdSend} />} />
-      </HStack>
+      <MessagesView ref={viewRef} chat={chat.id} />
+      <MessageInput chat={chat.id} onMessageSent={onMessageSent} />
     </Flex>
   );
 };

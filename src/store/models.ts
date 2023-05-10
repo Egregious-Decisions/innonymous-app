@@ -136,7 +136,9 @@ export interface QueryFilter {
   limit?: number;
 }
 
-export type MessageCreateBody = Pick<Message, 'body' | 'replied_to' | 'forwarded_from'>;
+export type MessageCreateBody = Pick<Message, 'replied_to' | 'forwarded_from'> & {
+  body: string | MessageBody;
+};
 
 export type MessageUpdate = Pick<Message, 'body'>;
 
