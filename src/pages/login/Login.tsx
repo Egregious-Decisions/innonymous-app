@@ -3,8 +3,6 @@ import {
   Heading,
   VStack,
   Spacer,
-  FormControl,
-  FormLabel,
   SystemStyleObject,
   useColorModeValue,
   Card,
@@ -12,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { Outlet } from 'react-router-dom';
 import Background from './components/background.jpg';
-import DarkThemeSwitch from './components/DarkThemeSwitch';
+import DarkThemeSwitch from '../../components/ui/DarkModeSwitch';
 
 const Login = () => {
   const bgFilter = useColorModeValue('invert(1)', '');
@@ -24,8 +22,6 @@ const Login = () => {
     bg: `url(${Background}) center/cover no-repeat`,
     content: `""`,
   };
-
-  const darkModeSwitchId = 'dark-mode';
 
   return (
     <VStack _before={background} divider={<Spacer border="none" />} padding="2" height="100%">
@@ -42,12 +38,7 @@ const Login = () => {
       </Card>
       <Card borderWidth="2px">
         <CardBody>
-          <FormControl display="flex" alignItems="center">
-            <FormLabel htmlFor={darkModeSwitchId} mb="0">
-              dark mode
-            </FormLabel>
-            <DarkThemeSwitch id={darkModeSwitchId} />
-          </FormControl>
+          <DarkThemeSwitch />
         </CardBody>
       </Card>
     </VStack>

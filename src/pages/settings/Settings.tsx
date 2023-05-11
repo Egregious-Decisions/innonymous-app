@@ -1,10 +1,14 @@
 import { Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import UserInfoSettings from './components/UserInfoSettings';
 import PasswordSettings from './components/PasswordSettings';
+import AppSettings from './components/AppSettings';
 
 const Settings = () => (
   <Tabs display="flex" flexDirection="column" flex="1" minHeight="0">
     <TabList>
+      <Tab>
+        <Heading size="md">app</Heading>
+      </Tab>
       <Tab>
         <Heading size="md">user info</Heading>
       </Tab>
@@ -16,6 +20,9 @@ const Settings = () => (
       </Tab>
     </TabList>
     <TabPanels overflowY="scroll" flex="1">
+      <TabPanel>
+        <AppSettings />
+      </TabPanel>
       <TabPanel>
         <UserInfoSettings />
       </TabPanel>

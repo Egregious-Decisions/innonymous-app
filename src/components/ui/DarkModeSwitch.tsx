@@ -12,11 +12,13 @@ import {
   LightMode,
   Image,
   Text,
+  FormLabel,
+  HStack,
 } from '@chakra-ui/react';
-import { useRef, ChangeEvent } from 'react';
+import { useRef, ChangeEvent, ReactNode, useMemo } from 'react';
 import LightThemeImage from './switch_theme.jpg';
 
-const DarkThemeSwitch = ({ id }: { id: string }) => {
+const DarkThemeSwitch = ({ id, label }: { id?: string; label?: ReactNode }) => {
   const { isOpen, onOpen: onOpenDialog, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement>(null);
   const { colorMode, toggleColorMode } = useColorMode();
@@ -29,9 +31,16 @@ const DarkThemeSwitch = ({ id }: { id: string }) => {
     onOpenDialog();
   };
 
+  const switchId = useMemo(() => id ?? 'dark-mode-switch', [id]);
+
   return (
     <>
-      <Switch id={id} isChecked={colorMode === 'dark'} onChange={onChange} />
+      <HStack>
+        <FormLabel htmlFor={switchId} mb="0">
+          {label ?? 'dark mode'}
+        </FormLabel>
+        <Switch id={switchId} isChecked={colorMode === 'dark'} onChange={onChange} />
+      </HStack>
 
       <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
         <AlertDialogOverlay>
