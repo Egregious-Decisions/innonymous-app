@@ -40,7 +40,7 @@ const MessageInput = ({
 
   const sendOnEnter = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key !== 'Enter' || e.altKey || e.ctrlKey) {
+      if (e.key !== 'Enter' || e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
         return;
       }
       e.preventDefault();
