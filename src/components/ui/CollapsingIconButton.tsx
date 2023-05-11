@@ -5,15 +5,16 @@ const CollapsingIconButton = ({
   children,
   leftIcon,
   rightIcon,
+  breakpoint,
   ...props
-}: ButtonProps & Omit<IconButtonProps, 'icon'>) => (
+}: ButtonProps & Omit<IconButtonProps, 'icon'> & { breakpoint: string }) => (
   <>
-    <Hide below="sm">
+    <Hide breakpoint={breakpoint}>
       <Button {...props} {...{ leftIcon, rightIcon }}>
         {children}
       </Button>
     </Hide>
-    <Show below="sm">
+    <Show breakpoint={breakpoint}>
       <IconButton {...props} icon={leftIcon ?? rightIcon} />
     </Show>
   </>

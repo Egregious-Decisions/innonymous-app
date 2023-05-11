@@ -1,4 +1,4 @@
-import { Flex, Icon, Text } from '@chakra-ui/react';
+import { Button, Flex, Icon, Text } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import { useMemo, useEffect } from 'react';
 import { MdArrowBack, MdCreate, MdSettings } from 'react-icons/md';
@@ -11,6 +11,8 @@ import CreateChat from '../../pages/create_chat/CreateChat';
 import { apiSlice } from '../../store/apiSlice';
 import { UserPrivateInfo } from '../../store/models';
 import CollapsingIconButton from '../ui/CollapsingIconButton';
+
+const buttons_breakpoint = '(max-width: 30em) or ((min-width: 48em) and (max-width: 80em))';
 
 const Menu = () => {
   const [params, setParams] = useSearchParams();
@@ -43,18 +45,15 @@ const Menu = () => {
       case 'new':
       case 'settings':
         return (
-          <CollapsingIconButton
-            aria-label="back to chats"
-            leftIcon={<MdArrowBack />}
-            onClick={() => setParams('')}
-          >
+          <Button leftIcon={<MdArrowBack />} onClick={() => setParams('')}>
             <Text>back to chats</Text>
-          </CollapsingIconButton>
+          </Button>
         );
       default:
         return (
           <>
             <CollapsingIconButton
+              breakpoint={buttons_breakpoint}
               aria-label="new chat"
               colorScheme="teal"
               leftIcon={<MdCreate />}
@@ -63,6 +62,7 @@ const Menu = () => {
               <Text>new chat</Text>
             </CollapsingIconButton>
             <CollapsingIconButton
+              breakpoint={buttons_breakpoint}
               aria-label="settings"
               leftIcon={<MdSettings />}
               onClick={() => setParams('settings')}

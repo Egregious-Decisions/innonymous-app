@@ -1,17 +1,17 @@
 import { Flex, Hide } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import Menu from './Menu';
 import MainView from './MainView';
 import { apiSlice } from '../../store/apiSlice';
+import { useAppRouteParams } from '../../hooks';
 
 const Layout = () => {
-  const { chat } = useParams();
+  const { alias } = useAppRouteParams();
   apiSlice.useReceiveUpdatesQuery();
 
   const content = useMemo(
     () =>
-      chat === undefined ? (
+      alias === undefined ? (
         <>
           <Menu />
           <Hide below="md">
@@ -26,7 +26,7 @@ const Layout = () => {
           <MainView />
         </>
       ),
-    [chat],
+    [alias],
   );
 
   return (

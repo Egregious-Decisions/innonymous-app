@@ -1,18 +1,19 @@
 import { Center, Flex, Icon, IconButton, Spinner } from '@chakra-ui/react';
 import { BiArrowBack } from 'react-icons/bi';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useCallback, useRef } from 'react';
 import Header from '../../components/layout/Header';
 import { apiSlice } from '../../store/apiSlice';
 import MessagesView from './components/MessagesView';
 import MessageInput from './components/MessageInput';
 import HeaderName from '../../components/ui/HeaderName';
+import { useAppRouteParams } from '../../hooks';
 
 const Chat = () => {
   const navigate = useNavigate();
   const viewRef = useRef<HTMLDivElement>(null);
 
-  const { alias } = useParams();
+  const { alias } = useAppRouteParams();
   const { data: chat, isLoading, isFetching } = apiSlice.useGetChatQuery({ chat: alias as string });
 
   const onMessageSent = useCallback(
