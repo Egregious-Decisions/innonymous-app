@@ -3,11 +3,16 @@ import { MdCreate } from 'react-icons/md';
 import { useSearchParams } from 'react-router-dom';
 import ChatItem from './ChatItem';
 import { apiSlice } from '../../store/apiSlice';
+import { useAppSelector } from '../../store/store';
+import { chatsSelectors } from '../../store/chatsSlice';
 
 const ChatList = () => {
   const [_, setParams] = useSearchParams();
 
-  const { isLoading, data } = apiSlice.useListChatsQuery({});
+  const chats = useAppSelector((state) => chatsSelectors.selectAll(state));
+
+  const { isLoading } = apiSlice.useListChatsQuery({ limit: 20 });
+
   return (
     <>
       <Button leftIcon={<Icon as={MdCreate} />} variant="ghost" onClick={() => setParams('new')}>
@@ -24,7 +29,8 @@ const ChatList = () => {
         {isLoading ? (
           <Spinner size="xl" margin="auto" />
         ) : (
-          data?.chats.map((chat) => <ChatItem chat={chat} key={chat.id} />)
+          // data?.chats.map((chat) => <ChatItem chat={chat} key={chat.id} />)
+          chats.map((chat) => <ChatItem chat={chat} key={chat.id} />)
         )}
       </VStack>
     </>

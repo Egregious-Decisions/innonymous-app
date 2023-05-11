@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom';
 import { useMemo } from 'react';
 import Menu from './Menu';
 import MainView from './MainView';
+import { apiSlice } from '../../store/apiSlice';
 
 const Layout = () => {
   const { chat } = useParams();
+  apiSlice.useReceiveUpdatesQuery();
 
   const content = useMemo(
     () =>

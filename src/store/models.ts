@@ -157,18 +157,29 @@ export interface Error {
   };
 }
 
-interface EventModel<TEventType extends string, TMessage> {
-  type: TEventType;
-  message: TMessage;
-}
+export const eventTypes = [
+  'chat_created',
+  'user_created',
+  'user_updated',
+  'user_deleted',
+  'message_created',
+  'message_updated',
+  'message_deleted',
+] as const;
 
-export type EventChatCreated = EventModel<'chat_created', Chat>;
-export type EventUserCreated = EventModel<'user_created', UserInfo>;
-export type EventUserUpdated = EventModel<'user_updated', UserInfo>;
-export type EventUserDeleted = EventModel<'user_deleted', Id>;
-export type EventMessageCreated = EventModel<'message_created', Message>;
-export type EventMessageUpdated = EventModel<'message_updated', Message>;
-export type EventMessageDeleted = EventModel<'message_deleted', Id>;
+export type EventType = (typeof eventTypes)[number];
+
+type EventModel<TKey extends string, TValue> = {
+  [key in TKey]: TValue;
+};
+
+export type EventChatCreated = EventModel<'chat', Chat>;
+export type EventUserCreated = EventModel<'user', UserInfo>;
+export type EventUserUpdated = EventModel<'user', UserInfo>;
+export type EventUserDeleted = EventModel<'user', Id>;
+export type EventMessageCreated = EventModel<'message', Message>;
+export type EventMessageUpdated = EventModel<'message', Message>;
+export type EventMessageDeleted = EventModel<'message', Id>;
 
 export type Event =
   | EventChatCreated

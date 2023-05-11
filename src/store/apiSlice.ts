@@ -17,11 +17,16 @@ import {
   ChatCreateBody,
   MessageCreateBody,
   Error,
-  Event,
   CaptchaTask,
+  PathParameter,
+  Id,
+  Event,
+  eventTypes,
+  EventMessageCreated,
+  EventChatCreated,
 } from './models';
-import type { RootState } from './store';
-import { authFailed, authRenewed } from './actions';
+import type { AppDispatch, RootState } from './store';
+import { authFailed, authRenewed, chatNew, messageNew } from './actions';
 
 const { VITE_API_ROOT: API_ROOT } = import.meta.env;
 
@@ -29,6 +34,25 @@ const eventSource = new EventSource(`${API_ROOT}/events`);
 const eventsInit = new Promise<void>((resolve) => {
   eventSource.addEventListener('open', () => resolve());
 });
+
+const getEventDispatcher = (dispatch: AppDispatch) => (message: MessageEvent) => {
+  const event = JSON.parse(message.data) as Event;
+  switch (message.type) {
+    case 'message_created':
+      dispatch(messageNew((event as EventMessageCreated).message));
+      break;
+    case 'chat_created':
+      dispatch(chatNew((event as EventChatCreated).chat));
+      break;
+    case 'user_created':
+    case 'user_updated':
+    case 'user_deleted':
+    case 'message_updated':
+    case 'message_deleted':
+    default:
+      break;
+  }
+};
 
 export const apiSlice = createApi({
   reducerPath: 'api',
@@ -83,27 +107,41 @@ export const apiSlice = createApi({
     response = await originalQuery();
     return response;
   },
-  tagTypes: ['chat', 'user', 'message'],
+  tagTypes: ['chat', 'user', 'message', 'session'],
   endpoints: (builder) => ({
-    receiveUpdates: builder.query<Event[], void>({
-      queryFn: () => ({ data: [] }),
-      onCacheEntryAdded: async (_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) => {
+    receiveUpdates: builder.query<Event | null, void>({
+      queryFn: () => ({ data: null }),
+      onCacheEntryAdded: async (_, { dispatch, cacheDataLoaded, cacheEntryRemoved }) => {
         await cacheDataLoaded;
         await eventsInit;
 
-        const listener = (message: MessageEvent) => {
-          const event = JSON.parse(message.data) as Event;
-          if (event.message === undefined) return;
+        const listener = getEventDispatcher(dispatch);
 
-          updateCachedData((draft) => {
-            draft.push(event);
-          });
-        };
-
-        eventSource.addEventListener('message_created', listener);
+        eventTypes.forEach((type) => eventSource.addEventListener(type, listener));
         await cacheEntryRemoved;
-        eventSource.removeEventListener('message_created', listener);
+        eventTypes.forEach((type) => eventSource.removeEventListener(type, listener));
         eventSource.close();
+      },
+      providesTags: (result) => {
+        if (!result) {
+          return [];
+        }
+        if ('message' in result && typeof result.message !== 'string') {
+          return [
+            { type: 'message', id: `${result.message.chat}.${result.message.id}` },
+            { type: 'message', id: `${result.message.chat}.recent` },
+          ];
+        }
+        if ('user' in result && typeof result.user !== 'string') {
+          return [{ type: 'user', id: `${result.user.id}` }];
+        }
+        if ('chat' in result) {
+          return [
+            { type: 'chat', id: `${result.chat.id}` },
+            { type: 'chat', id: `recent` },
+          ];
+        }
+        return [];
       },
     }),
     getCaptcha: builder.query<CaptchaTask, void>({
@@ -118,10 +156,11 @@ export const apiSlice = createApi({
         body: auth,
       }),
     }),
-    getUser: builder.query<UserInfo, IdPathParameter<'user'>>({
+    getUser: builder.query<UserInfo, PathParameter<'user', Id | string>>({
       query: ({ user }) => ({
         url: `/users/${user}`,
       }),
+      providesTags: (result) => (result ? [{ type: 'user', id: result.id }] : []),
     }),
     getCurrentUser: builder.query<UserPrivateInfo, void>({
       query: () => ({
@@ -156,7 +195,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: credentials,
       }),
-      invalidatesTags: ['user', 'chat', 'message'],
+      invalidatesTags: ['user', 'chat', 'message', 'session'],
     }),
     updateSession: builder.mutation<Session, SessionUpdate>({
       query: (update) => ({
@@ -170,7 +209,7 @@ export const apiSlice = createApi({
         url: '/sessions',
       }),
     }),
-    deleteSession: builder.mutation<void, IdPathParameter<'session'>>({
+    deleteSession: builder.mutation<void, PathParameter<'session', Id>>({
       query: ({ session }) => ({
         url: `/sessions/${session}`,
         method: 'DELETE',
@@ -183,20 +222,26 @@ export const apiSlice = createApi({
       }),
     }),
     listChats: builder.query<ObjectList<'chats', Chat>, QueryFilter>({
-      query: (filter) => ({ url: '/chats', params: filter }),
-      providesTags: (result) => result?.chats.map(({ id }) => ({ type: 'chat', id })) ?? [],
+      query: ({ ...filter }) => ({ url: '/chats', params: filter }),
+      providesTags: (result) =>
+        result
+          ? result.chats.map(({ id }) => ({
+              type: 'chat',
+              id,
+            }))
+          : [],
     }),
     getChat: builder.query<Chat, PathParameter<'chat', Id | string>>({
       query: ({ chat }) => ({ url: `/chats/${chat}` }),
       providesTags: (result) => (result ? [{ type: 'chat', id: result.id }] : []),
     }),
-    createChat: builder.mutation<null, ChatCreateBody>({
+    createChat: builder.mutation<Chat, ChatCreateBody>({
       query: (chat) => ({
         url: '/chats',
         method: 'POST',
         body: chat,
       }),
-      invalidatesTags: (_, error) => (error ? [] : ['chat']),
+      invalidatesTags: (result) => (result ? [{ type: 'chat', id: 'list' }] : []),
     }),
     listMessages: builder.query<
       ObjectList<'messages', Message>,
@@ -206,7 +251,13 @@ export const apiSlice = createApi({
         url: `/chats/${chat}/messages`,
         params: filter,
       }),
-      providesTags: (result) => result?.messages.map(({ id }) => ({ type: 'message', id })) ?? [],
+      providesTags: (result, _, { chat }) =>
+        result
+          ? result.messages.map(({ id }) => ({
+              type: 'message',
+              id: `${chat}.${id}`,
+            }))
+          : [],
     }),
     getMessage: builder.query<Message, PathParameter<'chat' | 'message', Id>>({
       query: ({ chat, ...message }) => ({
@@ -221,7 +272,8 @@ export const apiSlice = createApi({
         method: 'POST',
         body: message,
       }),
-      invalidatesTags: ['message'],
+      invalidatesTags: (result, _, { chat }) =>
+        result ? [{ type: 'message', id: `${chat}.recent` }] : [],
     }),
     updateMessage: builder.mutation<Message, MessageUpdate & PathParameter<'chat' | 'message', Id>>(
       {

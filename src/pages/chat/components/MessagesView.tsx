@@ -3,11 +3,15 @@ import { forwardRef } from 'react';
 import MessageItem from './MessageItem';
 import { Id } from '../../../store/models';
 import { apiSlice } from '../../../store/apiSlice';
+import { useAppSelector } from '../../../store/store';
+import { messagesSelectors } from '../../../store/messagesSlice';
 
 const MessagesView = forwardRef<HTMLDivElement, { chat: Id }>(({ chat }, ref) => {
   const bgColor = useColorModeValue('blackAlpha.200', '');
-
-  const { data, isLoading } = apiSlice.useListMessagesQuery({ chat });
+  const messages = useAppSelector((state) =>
+    messagesSelectors.selectAll(state).filter(({ chat: chat_id }) => chat_id === chat),
+  );
+  const { isLoading } = apiSlice.useListMessagesQuery({ chat, limit: 20 });
 
   return (
     <Stack
@@ -21,10 +25,10 @@ const MessagesView = forwardRef<HTMLDivElement, { chat: Id }>(({ chat }, ref) =>
       flex="1"
     >
       {isLoading && <Spinner size="xl" margin="auto" />}
-      {data &&
-        [...data.messages]
-          .reverse()
-          .map((message) => <MessageItem key={message.id} message={message} />)}
+      {/* {data && data.messages.map((message) => <MessageItem key={message.id} message={message} />)} */}
+      {messages.map((message) => (
+        <MessageItem key={message.id} message={message} />
+      ))}
     </Stack>
   );
 });
