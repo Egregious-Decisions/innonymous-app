@@ -7,7 +7,6 @@ import {
   MessageUpdate,
   UserCreateBody,
   UserInfo,
-  IdPathParameter,
   UserPrivateInfo,
   UserUpdate,
   Session,
@@ -187,8 +186,9 @@ export const apiSlice = createApi({
       query: (filter) => ({ url: '/chats', params: filter }),
       providesTags: (result) => result?.chats.map(({ id }) => ({ type: 'chat', id })) ?? [],
     }),
-    getChat: builder.query<Chat, IdPathParameter<'chat'>>({
+    getChat: builder.query<Chat, PathParameter<'chat', Id | string>>({
       query: ({ chat }) => ({ url: `/chats/${chat}` }),
+      providesTags: (result) => (result ? [{ type: 'chat', id: result.id }] : []),
     }),
     createChat: builder.mutation<null, ChatCreateBody>({
       query: (chat) => ({
@@ -200,7 +200,7 @@ export const apiSlice = createApi({
     }),
     listMessages: builder.query<
       ObjectList<'messages', Message>,
-      IdPathParameter<'chat'> & QueryFilter
+      PathParameter<'chat', Id> & QueryFilter
     >({
       query: ({ chat, ...filter }) => ({
         url: `/chats/${chat}/messages`,
@@ -208,12 +208,14 @@ export const apiSlice = createApi({
       }),
       providesTags: (result) => result?.messages.map(({ id }) => ({ type: 'message', id })) ?? [],
     }),
-    getMessage: builder.query<Message, IdPathParameter<'chat' | 'message'>>({
+    getMessage: builder.query<Message, PathParameter<'chat' | 'message', Id>>({
       query: ({ chat, ...message }) => ({
         url: `/chats/${chat}/messages/${message}`,
       }),
+      providesTags: (result) =>
+        result ? [{ type: 'message', id: `${result.chat}.${result.id}` }] : [],
     }),
-    createMessage: builder.mutation<Message, MessageCreateBody & IdPathParameter<'chat'>>({
+    createMessage: builder.mutation<Message, MessageCreateBody & PathParameter<'chat', Id>>({
       query: ({ chat, ...message }) => ({
         url: `/chats/${chat}/messages`,
         method: 'POST',
@@ -221,20 +223,24 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['message'],
     }),
-    updateMessage: builder.mutation<null, MessageUpdate & IdPathParameter<'chat' | 'message'>>({
-      query: ({ chat, message, ...update }) => ({
-        url: `/chats/${chat}/messages/${message}`,
-        method: 'POST',
-        body: update,
-      }),
-      invalidatesTags: ['message'],
-    }),
-    deleteMessage: builder.mutation<null, IdPathParameter<'message' | 'chat'>>({
+    updateMessage: builder.mutation<Message, MessageUpdate & PathParameter<'chat' | 'message', Id>>(
+      {
+        query: ({ chat, message, ...update }) => ({
+          url: `/chats/${chat}/messages/${message}`,
+          method: 'POST',
+          body: update,
+        }),
+        invalidatesTags: (result) =>
+          result ? [{ type: 'message', id: `${result.chat}.${result.id}` }] : [],
+      },
+    ),
+    deleteMessage: builder.mutation<null, PathParameter<'message' | 'chat', Id>>({
       query: ({ chat, message }) => ({
         url: `/chats/${chat}/messages/${message}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['message'],
+      invalidatesTags: (result, _, { chat, message }) =>
+        result ? [{ type: 'message', id: `${chat}.${message}` }] : [],
     }),
   }),
 });

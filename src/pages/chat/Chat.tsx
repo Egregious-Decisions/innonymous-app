@@ -1,7 +1,7 @@
 import { Center, Flex, Icon, IconButton, Spinner } from '@chakra-ui/react';
 import { BiArrowBack } from 'react-icons/bi';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import Header from '../../components/layout/Header';
 import { apiSlice } from '../../store/apiSlice';
 import MessagesView from './components/MessagesView';
@@ -12,10 +12,8 @@ const Chat = () => {
   const navigate = useNavigate();
   const viewRef = useRef<HTMLDivElement>(null);
 
-  const { chat: alias } = useParams();
-  const { data: chats, isLoading, isFetching } = apiSlice.useListChatsQuery({});
-
-  const chat = useMemo(() => chats?.chats.findLast((item) => item.alias === alias), [alias, chats]);
+  const { alias } = useParams();
+  const { data: chat, isLoading, isFetching } = apiSlice.useGetChatQuery({ chat: alias as string });
 
   const onMessageSent = useCallback(
     () => viewRef.current?.scrollTo({ top: viewRef.current?.scrollHeight, behavior: 'smooth' }),

@@ -142,8 +142,8 @@ export type MessageCreateBody = Pick<Message, 'replied_to' | 'forwarded_from'> &
 
 export type MessageUpdate = Pick<Message, 'body'>;
 
-export type IdPathParameter<TKey extends string> = {
-  [key in TKey]: Id;
+export type PathParameter<TKey extends string, TValue> = {
+  [key in TKey]: TValue;
 };
 
 export type ObjectList<TKey extends string, TValue> = {

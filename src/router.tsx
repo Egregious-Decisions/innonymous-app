@@ -7,20 +7,18 @@ import LoginForm from './pages/login/components/LoginForm';
 import NewAccountForm from './pages/login/components/NewAccountForm';
 import logIn from './actions/logIn';
 import createAccount from './actions/createAccount';
-import createChat from './actions/createChat';
 
 export const authRoutes = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
-    action: createChat,
     children: [
       {
         index: true,
         element: <NoChatSelected />,
       },
       {
-        path: ':chat',
+        path: ':alias',
         element: <Chat />,
       },
     ],

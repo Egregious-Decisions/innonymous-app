@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { Form, useSearchParams } from 'react-router-dom';
+import { useRef, useState, useCallback } from 'react';
+import { Form, Navigate, useSearchParams } from 'react-router-dom';
 import {
   Alert,
   AlertDescription,
@@ -8,27 +8,46 @@ import {
   Card,
   CardBody,
   FormControl,
-  FormErrorMessage,
   FormHelperText,
   HStack,
   Input,
   VStack,
   Text,
 } from '@chakra-ui/react';
-import {
-  aboutInputName,
-  aliasInputName,
-  nameInputName,
-  useAppActionData,
-} from '../../actions/AppAction';
 import Captcha from '../../components/form/Captcha';
 import AutosizeTextarea from '../../components/ui/AutosizeTextarea';
+import { apiSlice } from '../../store/apiSlice';
+import FormError from '../../components/form/FormError';
+import { CaptchaSolution } from '../../store/models';
 
 const CreateChat = () => {
   const aliasRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const aboutRef = useRef<HTMLTextAreaElement>(null);
   const [_, setParams] = useSearchParams();
-  const [chatAlias, setChatAlias] = useState<string | undefined>('');
-  const result = useAppActionData();
+  const [chatAlias, setChatAlias] = useState<string>('');
+  const [captcha, setCaptcha] = useState<CaptchaSolution>();
+
+  const [createChat, { isError, error, isLoading, isSuccess }] = apiSlice.useCreateChatMutation();
+
+  const onCreate = useCallback(async () => {
+    if (!captcha || !aliasRef.current || !nameRef.current || !aboutRef.current) {
+      return;
+    }
+
+    await createChat({
+      info: {
+        alias: aliasRef.current.value,
+        name: nameRef.current.value,
+        about: aboutRef.current.value,
+      },
+      captcha,
+    });
+  }, [captcha, createChat]);
+
+  if (isSuccess) {
+    return <Navigate to={chatAlias} />;
+  }
 
   return (
     <Card maxWidth="sm" alignSelf="center">
@@ -37,12 +56,11 @@ const CreateChat = () => {
           <VStack>
             <FormControl>
               <Input
-                name={aliasInputName}
                 ref={aliasRef}
                 placeholder="chat_link"
                 minLength={5}
                 maxLength={32}
-                onChange={() => setChatAlias(aliasRef.current?.value)}
+                onChange={() => setChatAlias(aliasRef.current?.value || '')}
                 isRequired
               />
               <FormHelperText>required, 5 to 32 symbols</FormHelperText>
@@ -51,17 +69,18 @@ const CreateChat = () => {
               </FormHelperText>
             </FormControl>
             <FormControl>
-              <Input name={nameInputName} placeholder="chat name" maxLength={64} />
+              <Input ref={nameRef} placeholder="chat name" maxLength={64} />
               <FormHelperText>optional, up to 64 symbols</FormHelperText>
             </FormControl>
             <FormControl>
-              <AutosizeTextarea name={aboutInputName} placeholder="about" maxLength={128} />
+              <AutosizeTextarea ref={aboutRef} placeholder="about" maxLength={128} />
               <FormHelperText>optional, up to 128 symbols</FormHelperText>
             </FormControl>
-            <Captcha />
-            <FormControl isInvalid={!result?.ok}>
-              <FormErrorMessage justifyContent="center">{result?.error}</FormErrorMessage>
-            </FormControl>
+            <Captcha onChanged={setCaptcha} />
+            <FormError
+              validationError="Chat field requirements are not met."
+              {...{ isError, error }}
+            />
             <Alert status="info">
               <AlertIcon />
               <AlertDescription>
@@ -70,7 +89,7 @@ const CreateChat = () => {
               </AlertDescription>
             </Alert>
             <HStack>
-              <Button type="submit" colorScheme="teal">
+              <Button onClick={onCreate} isLoading={isLoading} colorScheme="teal">
                 create chat
               </Button>
               <Button onClick={() => setParams('')}>cancel</Button>
