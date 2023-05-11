@@ -21,7 +21,6 @@ const ChatList = () => {
       {isLoading ? (
         <Spinner size="xl" margin="auto" />
       ) : (
-        // data?.chats.map((chat) => <ChatItem chat={chat} key={chat.id} />)
         chats.map((chat) => <ChatItem chat={chat} key={chat.id} />)
       )}
     </VStack>

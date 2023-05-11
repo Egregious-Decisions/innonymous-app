@@ -1,6 +1,6 @@
 import { Spinner, Stack, useColorModeValue } from '@chakra-ui/react';
 import { forwardRef } from 'react';
-import MessageItem from './MessageItem';
+import MessageItem from './message/MessageItem';
 import { Id } from '../../../store/models';
 import { apiSlice } from '../../../store/apiSlice';
 import { useAppSelector } from '../../../store/store';
@@ -25,7 +25,6 @@ const MessagesView = forwardRef<HTMLDivElement, { chat: Id }>(({ chat }, ref) =>
       flex="1"
     >
       {isLoading && <Spinner size="xl" margin="auto" />}
-      {/* {data && data.messages.map((message) => <MessageItem key={message.id} message={message} />)} */}
       {messages.map((message) => (
         <MessageItem key={message.id} message={message} />
       ))}

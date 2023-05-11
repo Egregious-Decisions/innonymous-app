@@ -1,6 +1,6 @@
 import { Tooltip, Icon, Text, Center, Box } from '@chakra-ui/react';
 import { AiFillEdit } from 'react-icons/ai';
-import DateTime from '../../../components/ui/DateTime';
+import DateTime from '../../../../components/ui/DateTime';
 
 interface MessageTimeProps {
   updated_at: Date;

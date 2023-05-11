@@ -72,7 +72,7 @@ export interface SessionInfo {
 export type SessionUpdate = Pick<Session, 'refresh_token'>;
 
 export interface MessageMention {
-  user: Id;
+  message: Id;
   chat: Id;
   type: 'message';
 }
@@ -91,11 +91,12 @@ export type Mention = MessageMention | UserMention | ChatMention;
 
 export interface MessageTextFragment {
   text: string;
+  style: 'bold' | 'normal' | 'italic' | 'monospace';
   type: 'text';
 }
 
 export interface MessageLinkFragment {
-  text: string;
+  text?: string;
   link: string;
   type: 'link';
 }
