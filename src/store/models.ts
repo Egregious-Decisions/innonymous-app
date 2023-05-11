@@ -91,7 +91,7 @@ export type Mention = MessageMention | UserMention | ChatMention;
 
 export interface MessageTextFragment {
   text: string;
-  style: 'bold' | 'normal' | 'italic' | 'monospace';
+  style: 'bold' | 'normal' | 'italic' | 'monospace' | 'strikethrough';
   type: 'text';
 }
 

@@ -10,13 +10,19 @@ const TextFragment = ({ fragment: { style, text } }: { fragment: MessageTextFrag
       case 'italic':
         return 'i';
       case 'monospace':
-        return 'pre';
+        return 'code';
+      case 'strikethrough':
+        return 's';
       default:
-        return undefined;
+        return 'span';
     }
   }, [style]);
 
-  return <Text as={as}>{text}</Text>;
+  return (
+    <Text as={as} whiteSpace="break-spaces">
+      {text}
+    </Text>
+  );
 };
 
 export default TextFragment;
