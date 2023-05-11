@@ -1,4 +1,4 @@
-import { Button, Flex, Icon, Text } from '@chakra-ui/react';
+import { Flex, Icon, Text } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import { useMemo, useEffect } from 'react';
 import { MdArrowBack, MdCreate, MdSettings } from 'react-icons/md';
@@ -10,6 +10,7 @@ import HeaderName from '../ui/HeaderName';
 import CreateChat from '../../pages/create_chat/CreateChat';
 import { apiSlice } from '../../store/apiSlice';
 import { UserPrivateInfo } from '../../store/models';
+import CollapsingIconButton from '../ui/CollapsingIconButton';
 
 const Menu = () => {
   const [params, setParams] = useSearchParams();
@@ -42,19 +43,32 @@ const Menu = () => {
       case 'new':
       case 'settings':
         return (
-          <Button leftIcon={<MdArrowBack />} onClick={() => setParams('')}>
+          <CollapsingIconButton
+            aria-label="back to chats"
+            leftIcon={<MdArrowBack />}
+            onClick={() => setParams('')}
+          >
             <Text>back to chats</Text>
-          </Button>
+          </CollapsingIconButton>
         );
       default:
         return (
           <>
-            <Button colorScheme="teal" leftIcon={<MdCreate />} onClick={() => setParams('new')}>
+            <CollapsingIconButton
+              aria-label="new chat"
+              colorScheme="teal"
+              leftIcon={<MdCreate />}
+              onClick={() => setParams('new')}
+            >
               <Text>new chat</Text>
-            </Button>
-            <Button leftIcon={<MdSettings />} onClick={() => setParams('settings')}>
+            </CollapsingIconButton>
+            <CollapsingIconButton
+              aria-label="settings"
+              leftIcon={<MdSettings />}
+              onClick={() => setParams('settings')}
+            >
               <Text>settings</Text>
-            </Button>
+            </CollapsingIconButton>
           </>
         );
     }

@@ -1,0 +1,22 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import { Button, ButtonProps, Hide, IconButton, IconButtonProps, Show } from '@chakra-ui/react';
+
+const CollapsingIconButton = ({
+  children,
+  leftIcon,
+  rightIcon,
+  ...props
+}: ButtonProps & Omit<IconButtonProps, 'icon'>) => (
+  <>
+    <Hide below="sm">
+      <Button {...props} {...{ leftIcon, rightIcon }}>
+        {children}
+      </Button>
+    </Hide>
+    <Show below="sm">
+      <IconButton {...props} icon={leftIcon ?? rightIcon} />
+    </Show>
+  </>
+);
+
+export default CollapsingIconButton;
