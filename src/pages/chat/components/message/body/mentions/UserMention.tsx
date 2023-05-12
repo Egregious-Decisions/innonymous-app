@@ -16,7 +16,7 @@ const UserMention = ({ user }: { user: Id }) => {
   }
 
   return (
-    <Link as={RouteLink} to={`/${data?.alias}`}>
+    <Link as={RouteLink} color="message-link" to={`/${data?.alias}`}>
       @{data?.alias}
     </Link>
   );

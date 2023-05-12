@@ -7,7 +7,11 @@ import TextFragment from './TextFragment';
 const MessageFragment = ({ fragment }: { fragment: FragmentObject }) => {
   switch (fragment.type) {
     case 'link':
-      return <Link href={fragment.link}>{fragment.text || fragment.link}</Link>;
+      return (
+        <Link href={fragment.link} color="message-link" textDecoration="1px solid underline">
+          {fragment.text || fragment.link}
+        </Link>
+      );
     case 'mention':
       return <MentionFragment mention={fragment.mention} />;
     case 'text':

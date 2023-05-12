@@ -22,7 +22,7 @@ const MessageMention = ({ message, chat }: { message: Id; chat: Id }) => {
   }
 
   return (
-    <Link as={RouteLink} to={`/${chatData?.alias}/${messageData?.id}`}>
+    <Link as={RouteLink} color="message-link" to={`/${chatData?.alias}/${messageData?.id}`}>
       @{chatData?.alias}/message
     </Link>
   );
