@@ -29,7 +29,7 @@ export interface UserInfo {
   name: string;
   alias: string;
   about: string;
-  updated_at: Date;
+  updated_at: string;
 }
 
 export type UserPrivateInfo = UserInfo & {
@@ -50,11 +50,11 @@ export interface Chat {
   alias: string;
   name: string;
   about: string;
-  updated_at: Date;
+  updated_at: string;
 }
 
 export interface ChatCreateBody {
-  chat: Pick<Chat, 'alias'> & Partial<Pick<Chat, 'name' | 'about'>>;
+  info: Pick<Chat, 'alias'> & Partial<Pick<Chat, 'name' | 'about'>>;
   captcha: CaptchaSolution;
 }
 
@@ -66,13 +66,50 @@ export interface Session {
 export interface SessionInfo {
   id: Id;
   agent: string;
-  updated_at: Date;
+  updated_at: string;
 }
 
 export type SessionUpdate = Pick<Session, 'refresh_token'>;
 
+export interface MessageMention {
+  message: Id;
+  chat: Id;
+  type: 'message';
+}
+
+export interface ChatMention {
+  chat: Id;
+  type: 'chat';
+}
+
+export interface UserMention {
+  user: Id;
+  type: 'user';
+}
+
+export type Mention = MessageMention | UserMention | ChatMention;
+
+export interface MessageTextFragment {
+  text: string;
+  style: 'bold' | 'normal' | 'italic' | 'monospace' | 'strikethrough';
+  type: 'text';
+}
+
+export interface MessageLinkFragment {
+  text?: string;
+  link: string;
+  type: 'link';
+}
+
+export interface MessageMentionFragment {
+  mention: Mention;
+  type: 'mention';
+}
+
+export type MessageFragment = MessageTextFragment | MessageLinkFragment | MessageMentionFragment;
+
 export interface MessageText {
-  data: string;
+  fragments: MessageFragment[];
   type: 'text';
 }
 
@@ -82,28 +119,39 @@ export interface MessageFiles {
   type: 'files';
 }
 
+export type MessageBody = MessageText | MessageFiles;
+
 export interface Message {
   chat: Id;
   author: Id;
-  body: MessageText | MessageFiles;
+  body: MessageBody;
   id: Id;
   replied_to?: Id;
   forwarded_from?: Id;
-  updated_at: Date;
-  created_at: Date;
+  updated_at: string;
+  created_at: string;
 }
 
-export interface QueryFilter {
-  created_before?: Date;
+export interface ChatQueryFilter {
+  updated_before?: string;
+  updated_after?: string;
   limit?: number;
 }
 
-export type MessageCreateBody = Pick<Message, 'body' | 'replied_to' | 'forwarded_from'>;
+export interface MessageQueryFilter {
+  created_before?: string;
+  created_after?: string;
+  limit?: number;
+}
+
+export type MessageCreateBody = Pick<Message, 'replied_to' | 'forwarded_from'> & {
+  body: string | MessageBody;
+};
 
 export type MessageUpdate = Pick<Message, 'body'>;
 
-export type IdPathParameter<TKey extends string> = {
-  [key in TKey]: Id;
+export type PathParameter<TKey extends string, TValue> = {
+  [key in TKey]: TValue;
 };
 
 export type ObjectList<TKey extends string, TValue> = {
@@ -117,18 +165,29 @@ export interface Error {
   };
 }
 
-interface EventModel<TEventType extends string, TMessage> {
-  type: TEventType;
-  message: TMessage;
-}
+export const eventTypes = [
+  'chat_created',
+  'user_created',
+  'user_updated',
+  'user_deleted',
+  'message_created',
+  'message_updated',
+  'message_deleted',
+] as const;
 
-export type EventChatCreated = EventModel<'chat_created', Chat>;
-export type EventUserCreated = EventModel<'user_created', UserInfo>;
-export type EventUserUpdated = EventModel<'user_updated', UserInfo>;
-export type EventUserDeleted = EventModel<'user_deleted', Id>;
-export type EventMessageCreated = EventModel<'message_created', Message>;
-export type EventMessageUpdated = EventModel<'message_updated', Message>;
-export type EventMessageDeleted = EventModel<'message_deleted', Id>;
+export type EventType = (typeof eventTypes)[number];
+
+type EventModel<TKey extends string, TValue> = {
+  [key in TKey]: TValue;
+};
+
+export type EventChatCreated = EventModel<'chat', Chat>;
+export type EventUserCreated = EventModel<'user', UserInfo>;
+export type EventUserUpdated = EventModel<'user', UserInfo>;
+export type EventUserDeleted = EventModel<'user', Id>;
+export type EventMessageCreated = EventModel<'message', Message>;
+export type EventMessageUpdated = EventModel<'message', Message>;
+export type EventMessageDeleted = EventModel<'message', Id>;
 
 export type Event =
   | EventChatCreated

@@ -1,34 +1,28 @@
-import { createBrowserRouter, Navigate, RouteObject } from 'react-router-dom';
-import Chats from './pages/chats/Chats';
-import Chat from './pages/chats/components/chat/Chat';
-import NoChatSelected from './pages/chats/components/chat/NoChatSelected';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import NoChatSelected from './pages/chat/NoChatSelected';
 import Login from './pages/login/Login';
 import LoginForm from './pages/login/components/LoginForm';
 import NewAccountForm from './pages/login/components/NewAccountForm';
 import logIn from './actions/logIn';
 import createAccount from './actions/createAccount';
-
-const defaultRoute: RouteObject = {
-  path: '*',
-  element: <Navigate to="/" />,
-};
+import ResolveAlias from './pages/ResolveAlias';
 
 export const authRoutes = createBrowserRouter([
   {
     path: '/',
-    element: <Chats />,
+    element: <Layout />,
     children: [
       {
         index: true,
         element: <NoChatSelected />,
       },
       {
-        path: ':id',
-        element: <Chat />,
+        path: ':alias',
+        element: <ResolveAlias />,
       },
     ],
   },
-  defaultRoute,
 ]);
 
 export const noAuthRoutes = createBrowserRouter([
@@ -46,7 +40,10 @@ export const noAuthRoutes = createBrowserRouter([
         element: <NewAccountForm loginUrl="/" loginActionUrl=".." />,
         action: createAccount,
       },
+      {
+        path: '*',
+        element: <Navigate to="/" />,
+      },
     ],
   },
-  defaultRoute,
 ]);

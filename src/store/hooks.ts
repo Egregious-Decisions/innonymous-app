@@ -1,7 +1,7 @@
 import { Action } from '@reduxjs/toolkit';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocalStorage } from 'usehooks-ts';
+import { useEffectOnce, useLocalStorage } from 'usehooks-ts';
 
 /**
  * A hook to store the Redux value in the `localStorage`.
@@ -27,15 +27,13 @@ const useReduxLocalStorage = <TState, TValue>(
 
   const [savedValue, saveValue] = useLocalStorage<TValue>(key, initialValue);
 
-  useEffect(() => {
+  useEffectOnce(() => {
     if (reduxValue === savedValue) {
       return;
     }
 
     dispatch(reduxSetAction(savedValue));
-    // This has to be done exactly once, so
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   useEffect(() => {
     saveValue(reduxValue);

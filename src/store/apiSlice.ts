@@ -7,20 +7,35 @@ import {
   MessageUpdate,
   UserCreateBody,
   UserInfo,
-  IdPathParameter,
   UserPrivateInfo,
   UserUpdate,
   Session,
   SessionUpdate,
   SessionInfo,
-  QueryFilter,
+  MessageQueryFilter,
   ObjectList,
   ChatCreateBody,
   MessageCreateBody,
   Error,
-  Event,
   CaptchaTask,
+  PathParameter,
+  Id,
+  Event,
+  eventTypes,
+  EventMessageCreated,
+  EventChatCreated,
+  ChatQueryFilter,
 } from './models';
+import type { AppDispatch, RootState } from './store';
+import {
+  authFailed,
+  authRenewed,
+  chatNew,
+  messageFailed,
+  messageNew,
+  messagePending,
+  messageSent,
+} from './actions';
 
 const { VITE_API_ROOT: API_ROOT } = import.meta.env;
 
@@ -29,39 +44,113 @@ const eventsInit = new Promise<void>((resolve) => {
   eventSource.addEventListener('open', () => resolve());
 });
 
+const getEventDispatcher = (dispatch: AppDispatch) => (message: MessageEvent) => {
+  const event = JSON.parse(message.data) as Event;
+  switch (message.type) {
+    case 'message_created':
+      dispatch(messageNew((event as EventMessageCreated).message));
+      break;
+    case 'chat_created':
+      dispatch(chatNew((event as EventChatCreated).chat));
+      break;
+    case 'user_created':
+    case 'user_updated':
+    case 'user_deleted':
+    case 'message_updated':
+    case 'message_deleted':
+    default:
+      break;
+  }
+};
+
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_ROOT,
-    prepareHeaders: (headers, { getState }) => {
-      const { token } = (getState() as { auth: { token: string } }).auth;
-      if (token !== '') {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
-  tagTypes: ['Session', 'User', 'Chats', 'Messages'],
+  baseQuery: async (args, api, extraOptions) => {
+    const queryWithAuth = fetchBaseQuery({
+      baseUrl: API_ROOT,
+      prepareHeaders: (headers) => {
+        const {
+          auth: { access_token },
+        } = api.getState() as RootState;
+        if (access_token) {
+          headers.set('Authorization', `Bearer ${access_token}`);
+        }
+        return headers;
+      },
+    });
+
+    const originalQuery = async () => queryWithAuth(args, api, extraOptions);
+    let response = await originalQuery();
+    if (response.error?.status !== 401) {
+      return response;
+    }
+
+    const {
+      auth: { refresh_token },
+    } = api.getState() as RootState;
+
+    if (!refresh_token || api.endpoint === 'updateSession') {
+      api.dispatch(authFailed());
+      return response;
+    }
+
+    const update: SessionUpdate = { refresh_token };
+
+    const authResponse = await queryWithAuth(
+      {
+        url: '/sessions',
+        method: 'PATCH',
+        body: update,
+      },
+      api,
+      extraOptions,
+    );
+
+    if (authResponse.error) {
+      api.dispatch(authFailed());
+      return response;
+    }
+
+    api.dispatch(authRenewed(authResponse.data as Session));
+
+    response = await originalQuery();
+    return response;
+  },
+  tagTypes: ['chat', 'user', 'message', 'session'],
   endpoints: (builder) => ({
-    receiveUpdates: builder.query<Event[], void>({
-      queryFn: () => ({ data: [] }),
-      onCacheEntryAdded: async (_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) => {
+    receiveUpdates: builder.query<Event | null, void>({
+      queryFn: () => ({ data: null }),
+      onCacheEntryAdded: async (_, { dispatch, cacheDataLoaded, cacheEntryRemoved }) => {
         await cacheDataLoaded;
         await eventsInit;
 
-        const listener = (message: MessageEvent) => {
-          const event = JSON.parse(message.data) as Event;
-          if (event.message === undefined) return;
+        const listener = getEventDispatcher(dispatch);
 
-          updateCachedData((draft) => {
-            draft.push(event);
-          });
-        };
-
-        eventSource.addEventListener('message_created', listener);
+        eventTypes.forEach((type) => eventSource.addEventListener(type, listener));
         await cacheEntryRemoved;
-        eventSource.removeEventListener('message_created', listener);
+        eventTypes.forEach((type) => eventSource.removeEventListener(type, listener));
         eventSource.close();
+      },
+      providesTags: (result) => {
+        if (!result) {
+          return [];
+        }
+        if ('message' in result && typeof result.message !== 'string') {
+          return [
+            { type: 'message', id: `${result.message.chat}.${result.message.id}` },
+            { type: 'message', id: `${result.message.chat}.recent` },
+          ];
+        }
+        if ('user' in result && typeof result.user !== 'string') {
+          return [{ type: 'user', id: `${result.user.id}` }];
+        }
+        if ('chat' in result) {
+          return [
+            { type: 'chat', id: `${result.chat.id}` },
+            { type: 'chat', id: `recent` },
+          ];
+        }
+        return [];
       },
     }),
     getCaptcha: builder.query<CaptchaTask, void>({
@@ -76,29 +165,38 @@ export const apiSlice = createApi({
         body: auth,
       }),
     }),
-    getUser: builder.query<UserInfo, IdPathParameter<'user'>>({
+    getUser: builder.query<UserInfo, PathParameter<'user', Id | string>>({
       query: ({ user }) => ({
         url: `/users/${user}`,
       }),
+      providesTags: (result) => (result ? [{ type: 'user', id: result.id }] : []),
     }),
     getCurrentUser: builder.query<UserPrivateInfo, void>({
       query: () => ({
         url: '/users/me',
       }),
-      providesTags: ['User'],
+      providesTags: (result) =>
+        result
+          ? [
+              { type: 'user', id: result.id },
+              { type: 'user', id: 'me' },
+            ]
+          : [],
     }),
     updateCurrentUser: builder.mutation<UserPrivateInfo, UserUpdate>({
-      query: () => ({
+      query: (update) => ({
         url: '/users/me',
+        method: 'PATCH',
+        body: update,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: [{ type: 'user', id: 'me' }],
     }),
     deleteCurrentUser: builder.mutation<null, void>({
       query: () => ({
         url: '/users/me',
         method: 'DELETE',
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: [{ type: 'user', id: 'me' }],
     }),
     createSession: builder.mutation<Session, Credentials>({
       query: (credentials) => ({
@@ -106,7 +204,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: credentials,
       }),
-      invalidatesTags: ['Session', 'User', 'Chats', 'Messages'],
+      invalidatesTags: ['user', 'chat', 'message', 'session'],
     }),
     updateSession: builder.mutation<Session, SessionUpdate>({
       query: (update) => ({
@@ -114,80 +212,106 @@ export const apiSlice = createApi({
         method: 'PATCH',
         body: update,
       }),
-      invalidatesTags: ['Session'],
     }),
     getSessions: builder.query<ObjectList<'sessions', SessionInfo>, void>({
       query: () => ({
         url: '/sessions',
       }),
-      providesTags: ['Session'],
     }),
-    deleteSession: builder.mutation<void, IdPathParameter<'session'>>({
+    deleteSession: builder.mutation<void, PathParameter<'session', Id>>({
       query: ({ session }) => ({
         url: `/sessions/${session}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Session'],
     }),
     deleteAllSessions: builder.mutation<null, void>({
       query: () => ({
         url: '/sessions',
         method: 'DELETE',
       }),
-      invalidatesTags: ['Session'],
     }),
-    listChats: builder.query<ObjectList<'chats', Chat>, QueryFilter>({
-      query: (filter) => ({ url: '/chats', params: filter }),
-      providesTags: ['Chats'],
+    listChats: builder.query<ObjectList<'chats', Chat>, ChatQueryFilter>({
+      query: ({ ...filter }) => ({ url: '/chats', params: filter }),
+      providesTags: (result) =>
+        result
+          ? result.chats.map(({ id }) => ({
+              type: 'chat',
+              id,
+            }))
+          : [],
     }),
-    getChat: builder.query<Chat, IdPathParameter<'chat'>>({
+    getChat: builder.query<Chat, PathParameter<'chat', Id | string>>({
       query: ({ chat }) => ({ url: `/chats/${chat}` }),
+      providesTags: (result) => (result ? [{ type: 'chat', id: result.id }] : []),
     }),
-    createChat: builder.mutation<null, ChatCreateBody>({
+    createChat: builder.mutation<Chat, ChatCreateBody>({
       query: (chat) => ({
         url: '/chats',
         method: 'POST',
         body: chat,
       }),
-      invalidatesTags: ['Chats'],
+      invalidatesTags: (result) => (result ? [{ type: 'chat', id: 'list' }] : []),
     }),
     listMessages: builder.query<
-      ObjectList<'message', Message>,
-      IdPathParameter<'chat'> & QueryFilter
+      ObjectList<'messages', Message>,
+      PathParameter<'chat', Id> & MessageQueryFilter
     >({
       query: ({ chat, ...filter }) => ({
         url: `/chats/${chat}/messages`,
         params: filter,
       }),
-      providesTags: ['Messages'],
+      providesTags: (result, _, { chat }) =>
+        result
+          ? result.messages.map(({ id }) => ({
+              type: 'message',
+              id: `${chat}.${id}`,
+            }))
+          : [],
     }),
-    getMessage: builder.query<Message, IdPathParameter<'chat' | 'message'>>({
+    getMessage: builder.query<Message, PathParameter<'chat' | 'message', Id>>({
       query: ({ chat, ...message }) => ({
         url: `/chats/${chat}/messages/${message}`,
       }),
+      providesTags: (result) =>
+        result ? [{ type: 'message', id: `${result.chat}.${result.id}` }] : [],
     }),
-    createMessage: builder.mutation<Message, MessageCreateBody & IdPathParameter<'chat'>>({
+    createMessage: builder.mutation<Message, MessageCreateBody & PathParameter<'chat', Id>>({
       query: ({ chat, ...message }) => ({
         url: `/chats/${chat}/messages`,
         method: 'POST',
         body: message,
       }),
-      invalidatesTags: ['Messages'],
+      onQueryStarted: async (arg, { dispatch, requestId, queryFulfilled }) => {
+        dispatch(messagePending({ ...arg, requestId, created_at: new Date().toISOString() }));
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          dispatch(messageFailed(requestId));
+          return;
+        }
+        dispatch(messageSent(requestId));
+      },
+      invalidatesTags: (result, _, { chat }) =>
+        result ? [{ type: 'message', id: `${chat}.recent` }] : [],
     }),
-    updateMessage: builder.mutation<null, MessageUpdate & IdPathParameter<'chat' | 'message'>>({
-      query: ({ chat, message, ...update }) => ({
-        url: `/chats/${chat}/messages/${message}`,
-        method: 'POST',
-        body: update,
-      }),
-      invalidatesTags: ['Messages'],
-    }),
-    deleteMessage: builder.mutation<null, IdPathParameter<'message' | 'chat'>>({
+    updateMessage: builder.mutation<Message, MessageUpdate & PathParameter<'chat' | 'message', Id>>(
+      {
+        query: ({ chat, message, ...update }) => ({
+          url: `/chats/${chat}/messages/${message}`,
+          method: 'POST',
+          body: update,
+        }),
+        invalidatesTags: (result) =>
+          result ? [{ type: 'message', id: `${result.chat}.${result.id}` }] : [],
+      },
+    ),
+    deleteMessage: builder.mutation<null, PathParameter<'message' | 'chat', Id>>({
       query: ({ chat, message }) => ({
         url: `/chats/${chat}/messages/${message}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Messages'],
+      invalidatesTags: (result, _, { chat, message }) =>
+        result ? [{ type: 'message', id: `${chat}.${message}` }] : [],
     }),
   }),
 });

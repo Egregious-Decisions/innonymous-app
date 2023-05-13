@@ -12,7 +12,10 @@ root.render(
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <StrictMode>
       <Provider store={store}>
-        <ChakraProvider theme={theme}>
+        <ChakraProvider
+          theme={theme}
+          toastOptions={{ defaultOptions: { position: 'bottom-left' } }}
+        >
           <App />
         </ChakraProvider>
       </Provider>

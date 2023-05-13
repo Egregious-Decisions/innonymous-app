@@ -66,5 +66,6 @@ module.exports = {
         varsIgnorePattern: '^_',
       },
     ],
+    'no-unused-expressions': [2, { enforceForJSX: true }],
   },
 };

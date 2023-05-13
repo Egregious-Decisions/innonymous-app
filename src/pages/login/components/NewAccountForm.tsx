@@ -11,7 +11,7 @@ import {
   FormErrorMessage,
   FormHelperText,
 } from '@chakra-ui/react';
-import Captcha from '../../../components/Captcha';
+import Captcha from '../../../components/form/Captcha';
 import { aliasInputName, passwordInputName, useAppActionData } from '../../../actions/AppAction';
 
 const NewAccountForm = ({

@@ -1,7 +1,7 @@
-import { redirect } from 'react-router-dom';
 import { AppActionFunction, aliasInputName, passwordInputName } from './AppAction';
 import { apiSlice, getErrorMessage } from '../store/apiSlice';
 import { store } from '../store/store';
+import { authLogin } from '../store/actions';
 
 const logIn: AppActionFunction = async ({ request }) => {
   const formData = await request.formData();
@@ -20,7 +20,8 @@ const logIn: AppActionFunction = async ({ request }) => {
     return { ok: false, error: getErrorMessage(result.error, 'Invalid username or password.') };
   }
 
-  redirect('/');
+  store.dispatch(authLogin(result.data));
+
   return { ok: true };
 };
 
