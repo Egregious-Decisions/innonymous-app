@@ -7,16 +7,16 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 import { Chat } from '../../store/models';
 import DateTime from '../../components/ui/DateTime';
+import AppRouteLink from '../../components/ui/AppLink';
 
 const ChatItem = ({ chat }: { chat: Chat }) => {
   const hoverColor = useColorModeValue('gray.100', 'gray.700');
 
   return (
     <LinkBox _hover={{ background: hoverColor }} width="0" minWidth="100%">
-      <LinkOverlay as={Link} to={chat.alias}>
+      <LinkOverlay as={AppRouteLink} to={chat.alias}>
         <Box padding="3">
           <HStack>
             <Text noOfLines={1}>{chat.name}</Text>

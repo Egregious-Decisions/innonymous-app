@@ -1,7 +1,7 @@
 import { Box, SkeletonText, Text } from '@chakra-ui/react';
 
 export interface HeaderNameProps {
-  isLoading: boolean;
+  isLoading?: boolean;
   name: string;
   alias: string;
 }
@@ -18,7 +18,7 @@ const HeaderName = ({ isLoading, name, alias }: HeaderNameProps) => {
   if (name === '') {
     return (
       <Text noOfLines={1} flex="1">
-        {alias}
+        @{alias}
       </Text>
     );
   }
@@ -27,7 +27,7 @@ const HeaderName = ({ isLoading, name, alias }: HeaderNameProps) => {
     <Box width="0" flex="1">
       <Text noOfLines={1}>{name}</Text>
       <Text noOfLines={1} color="gray">
-        {alias}
+        @{alias}
       </Text>
     </Box>
   );

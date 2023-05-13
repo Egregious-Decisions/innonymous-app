@@ -3,6 +3,8 @@ import {
   CardBody,
   CardHeader,
   HStack,
+  Link,
+  SkeletonText,
   Spacer,
   Text,
   useColorModeValue,
@@ -11,6 +13,7 @@ import MessageTime from './MessageTime';
 import MessageBody from './body/MessageBody';
 import { apiSlice } from '../../../../store/apiSlice';
 import { Message } from '../../../../store/models';
+import AppRouteLink from '../../../../components/ui/AppLink';
 
 const MessageItem = ({ message }: { message: Message }) => {
   const headerColor = useColorModeValue('gray.800', 'gray.200');
@@ -27,9 +30,13 @@ const MessageItem = ({ message }: { message: Message }) => {
     >
       <CardHeader padding={0} fontSize="sm" color={headerColor}>
         <HStack>
-          <Text fontWeight="bold" noOfLines={1}>
-            {authorData?.name || authorData?.alias || message.author}
-          </Text>
+          {authorData ? (
+            <Link as={AppRouteLink} fontWeight="bold" noOfLines={1} to={`/${authorData.alias}`}>
+              {authorData.name || authorData.alias}
+            </Link>
+          ) : (
+            <SkeletonText noOfLines={1}>Message author</SkeletonText>
+          )}
           <Spacer />
           <MessageTime
             created_at={new Date(message.created_at)}

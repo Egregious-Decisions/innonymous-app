@@ -7,6 +7,7 @@ import LoginForm from './pages/login/components/LoginForm';
 import NewAccountForm from './pages/login/components/NewAccountForm';
 import logIn from './actions/logIn';
 import createAccount from './actions/createAccount';
+import ResolveAlias from './pages/ResolveAlias';
 
 export const authRoutes = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ export const authRoutes = createBrowserRouter([
       },
       {
         path: ':alias',
-        element: <Chat />,
+        element: <ResolveAlias />,
       },
     ],
   },
