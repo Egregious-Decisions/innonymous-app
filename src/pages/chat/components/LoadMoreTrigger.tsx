@@ -1,9 +1,8 @@
-import { Alert, AlertDescription, Center, Spinner, Text, useBoolean } from '@chakra-ui/react';
+import { Alert, AlertDescription, Center, Spinner, useBoolean } from '@chakra-ui/react';
 import { useEffect, useRef } from 'react';
 import { useIntersectionObserver } from 'usehooks-ts';
 import { apiSlice } from '../../../store/apiSlice';
 import { Id } from '../../../store/models';
-import NoMessages from './NoMessages';
 
 const LoadMoreTrigger = ({ chat, before, limit }: { chat: Id; before: string; limit: number }) => {
   const ref = useRef<HTMLDivElement>(null);
