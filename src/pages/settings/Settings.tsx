@@ -5,7 +5,7 @@ import AppSettings from './components/AppSettings';
 
 const Settings = () => (
   <Tabs display="flex" flexDirection="column" flex="1" minHeight="0">
-    <TabList>
+    <TabList whiteSpace="nowrap" overflowX="auto" overflowY="hidden" width="0" minWidth="100%">
       <Tab>
         <Heading size="md">app</Heading>
       </Tab>
