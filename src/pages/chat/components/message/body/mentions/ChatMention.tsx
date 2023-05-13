@@ -1,4 +1,4 @@
-import { Link, SkeletonText } from '@chakra-ui/react';
+import { Link, Skeleton } from '@chakra-ui/react';
 import { apiSlice } from '../../../../../../store/apiSlice';
 import { Id } from '../../../../../../store/models';
 import ErrorFragment from '../ErrorFragment';
@@ -12,7 +12,11 @@ const ChatMention = ({ chat }: { chat: Id }) => {
   }
 
   if (isLoading) {
-    return <SkeletonText noOfLines={1}>@chat_link</SkeletonText>;
+    return (
+      <Skeleton as="span" noOfLines={1}>
+        @chat_link
+      </Skeleton>
+    );
   }
 
   return (

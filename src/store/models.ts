@@ -133,7 +133,8 @@ export interface Message {
 }
 
 export interface QueryFilter {
-  created_before?: Date;
+  created_before?: string;
+  created_after?: string;
   limit?: number;
 }
 

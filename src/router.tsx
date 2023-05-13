@@ -1,6 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import Chat from './pages/chat/Chat';
 import NoChatSelected from './pages/chat/NoChatSelected';
 import Login from './pages/login/Login';
 import LoginForm from './pages/login/components/LoginForm';
