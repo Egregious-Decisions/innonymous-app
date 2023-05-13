@@ -12,7 +12,7 @@ import {
   Session,
   SessionUpdate,
   SessionInfo,
-  QueryFilter,
+  MessageQueryFilter,
   ObjectList,
   ChatCreateBody,
   MessageCreateBody,
@@ -24,6 +24,7 @@ import {
   eventTypes,
   EventMessageCreated,
   EventChatCreated,
+  ChatQueryFilter,
 } from './models';
 import type { AppDispatch, RootState } from './store';
 import { authFailed, authRenewed, chatNew, messageNew } from './actions';
@@ -221,7 +222,7 @@ export const apiSlice = createApi({
         method: 'DELETE',
       }),
     }),
-    listChats: builder.query<ObjectList<'chats', Chat>, QueryFilter>({
+    listChats: builder.query<ObjectList<'chats', Chat>, ChatQueryFilter>({
       query: ({ ...filter }) => ({ url: '/chats', params: filter }),
       providesTags: (result) =>
         result
@@ -245,7 +246,7 @@ export const apiSlice = createApi({
     }),
     listMessages: builder.query<
       ObjectList<'messages', Message>,
-      PathParameter<'chat', Id> & QueryFilter
+      PathParameter<'chat', Id> & MessageQueryFilter
     >({
       query: ({ chat, ...filter }) => ({
         url: `/chats/${chat}/messages`,

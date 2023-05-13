@@ -132,7 +132,13 @@ export interface Message {
   created_at: string;
 }
 
-export interface QueryFilter {
+export interface ChatQueryFilter {
+  updated_before?: string;
+  updated_after?: string;
+  limit?: number;
+}
+
+export interface MessageQueryFilter {
   created_before?: string;
   created_after?: string;
   limit?: number;
