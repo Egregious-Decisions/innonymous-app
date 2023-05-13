@@ -11,14 +11,14 @@ on:
           - default
           - github_pages
           - none
-        default: default 
-        description: "Upload artifact type"
+        default: default
+        description: 'Upload artifact type'
   workflow_call:
     inputs:
       upload_for_github_pages:
         type: boolean
         default: true
-        description: "Upload as GitHub pages artifact"
+        description: 'Upload as GitHub pages artifact'
 
 # Allow one concurrent run for each branch
 concurrency:
@@ -54,11 +54,11 @@ jobs:
         if: ${{ !inputs.upload_for_github_pages || inputs.upload == 'default' }}
         uses: actions/upload-artifact@v3
         with:
-          name: "build"
-          path: "dist/*"
+          name: 'build'
+          path: 'dist/*'
 
       - name: Upload Pages artifact
         if: ${{ inputs.upload_for_github_pages || inputs.upload == 'github_pages' }}
         uses: actions/upload-pages-artifact@v1
         with:
-          path: "dist/"
+          path: 'dist/'
