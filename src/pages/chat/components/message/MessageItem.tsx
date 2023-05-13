@@ -6,7 +6,6 @@ import {
   Link,
   SkeletonText,
   Spacer,
-  Text,
   useColorModeValue,
 } from '@chakra-ui/react';
 import MessageTime from './MessageTime';

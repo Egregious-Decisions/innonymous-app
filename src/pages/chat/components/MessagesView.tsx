@@ -19,7 +19,7 @@ const MessagesView = forwardRef<HTMLDivElement, { chat: Id }>(({ chat }, ref) =>
       background={bgColor}
       maxHeight="100%"
       alignItems="start"
-      paddingX={2}
+      padding={2}
       overflowY="scroll"
       direction="column-reverse"
       flex="1"
