@@ -7,11 +7,15 @@ import { useAppSelector } from '../../../store/store';
 import { messagesSelectors } from '../../../store/messagesSlice';
 import NoMessages from './NoMessages';
 import LoadMoreTrigger from '../../../components/ui/LoadMoreTrigger';
+import { pendingSelectors } from '../../../store/pendingSlice';
 
 const MessagesView = forwardRef<HTMLDivElement, { chat: Id }>(({ chat }, ref) => {
   const bgColor = useColorModeValue('blackAlpha.200', '');
   const messages = useAppSelector((state) =>
     messagesSelectors.selectAll(state).filter(({ chat: chat_id }) => chat_id === chat),
+  );
+  const pendingMessages = useAppSelector((state) =>
+    pendingSelectors.selectAll(state).filter(({ chat: chat_id }) => chat_id === chat),
   );
   const [isEndReached, { on: onEndReached }] = useBoolean(false);
   const { isLoading } = apiSlice.useListMessagesQuery({ chat, limit: 20 });
@@ -48,6 +52,9 @@ const MessagesView = forwardRef<HTMLDivElement, { chat: Id }>(({ chat }, ref) =>
       flex="1"
     >
       {isLoading && <Spinner size="xl" margin="auto" />}
+      {pendingMessages.map((message) => (
+        <MessageItem key={message.requestId} message={message} />
+      ))}
       {messages.map((message) => (
         <MessageItem key={message.id} message={message} />
       ))}

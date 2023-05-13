@@ -29,13 +29,15 @@ const MessageInput = ({
       return;
     }
 
-    await sendMessage({
+    const message = {
       body: messageRef.current.value,
       replied_to: reply_to,
       chat,
-    });
+    };
 
     messageRef.current.value = '';
+
+    await sendMessage(message);
   }, [chat, reply_to, sendMessage]);
 
   const onSendClick = useCallback(async () => {
