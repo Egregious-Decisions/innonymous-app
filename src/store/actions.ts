@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Chat, Id, Message, MessageCreateBody, Session } from './models';
+import { Chat, Message, MessageCreateBody, Session } from './models';
 
 export const authLogout = createAction('auth/logout');
 export const authFailed = createAction('auth/failed');

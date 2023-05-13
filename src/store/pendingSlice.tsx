@@ -2,7 +2,6 @@ import { EntityState, Slice, createEntityAdapter, createSlice, isAnyOf } from '@
 import {
   PendingMessage,
   messageFailed,
-  messageNew,
   messagePending,
   messageRetry,
   messageSent,
