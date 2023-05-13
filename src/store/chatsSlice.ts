@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { chatNew } from './actions';
+import { chatNew, messageNew } from './actions';
 import { Chat } from './models';
 import type { RootState } from './store';
 import { apiSlice } from './apiSlice';
@@ -16,6 +16,12 @@ export const chatsSlice = createSlice({
   extraReducers: (builder) =>
     builder
       .addCase(chatNew, chatsAdapter.addOne)
+      .addCase(messageNew, (state, { payload }) =>
+        chatsAdapter.updateOne(state, {
+          id: payload.chat,
+          changes: { updated_at: payload.created_at },
+        }),
+      )
       .addMatcher(apiSlice.endpoints.listChats.matchFulfilled, (state, { payload }) =>
         chatsAdapter.upsertMany(state, payload.chats),
       ),
