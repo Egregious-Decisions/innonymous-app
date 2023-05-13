@@ -1,25 +1,28 @@
-import { Text } from '@chakra-ui/react';
+import { Text, TextProps, forwardRef } from '@chakra-ui/react';
 import { MessageBody as BodyObject } from '../../../../../store/models';
 import MessageFragment from './MessageFragment';
 import ErrorFragment from './ErrorFragment';
 
-const MessageBody = ({ body }: { body: BodyObject }) => {
-  if (body.type === 'files') {
+const MessageBody = forwardRef<{ body: BodyObject; isPreview?: boolean } & TextProps, 'p'>(
+  ({ body, isPreview, ...props }, ref) => {
+    if (body.type === 'files') {
+      return (
+        <Text as="i">
+          <ErrorFragment>message type not supported yet</ErrorFragment>
+        </Text>
+      );
+    }
+
     return (
-      <Text as="i">
-        <ErrorFragment>message type not supported yet</ErrorFragment>
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <Text ref={ref} overflowWrap="anywhere" maxWidth="100%" {...props}>
+        {body.fragments.map((fragment, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <MessageFragment key={i} {...{ fragment, isPreview }} />
+        ))}
       </Text>
     );
-  }
-
-  return (
-    <Text overflowWrap="anywhere" maxWidth="100%">
-      {body.fragments.map((fragment, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <MessageFragment key={i} fragment={fragment} />
-      ))}
-    </Text>
-  );
-};
+  },
+);
 
 export default MessageBody;

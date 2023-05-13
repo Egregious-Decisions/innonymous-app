@@ -59,6 +59,7 @@ const MessageInput = ({
       <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
       <AutosizeTextarea
         onKeyDown={sendOnEnter}
+        maxLength={1024}
         ref={messageRef}
         placeholder="Message text"
         paddingY={2}

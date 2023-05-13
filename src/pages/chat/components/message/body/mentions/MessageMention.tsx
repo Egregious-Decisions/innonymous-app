@@ -1,9 +1,17 @@
-import { Link, Skeleton } from '@chakra-ui/react';
+import { Link, Skeleton, Text } from '@chakra-ui/react';
 import { apiSlice } from '../../../../../../store/apiSlice';
 import { Id } from '../../../../../../store/models';
 import AppRouteLink from '../../../../../../components/ui/AppLink';
 
-const MessageMention = ({ message, chat }: { message: Id; chat: Id }) => {
+const MessageMention = ({
+  message,
+  chat,
+  isPreview,
+}: {
+  message: Id;
+  chat: Id;
+  isPreview?: boolean;
+}) => {
   const { data: messageData, isLoading, isError } = apiSlice.useGetMessageQuery({ chat, message });
   const {
     data: chatData,
@@ -23,6 +31,10 @@ const MessageMention = ({ message, chat }: { message: Id; chat: Id }) => {
         @username
       </Skeleton>
     );
+  }
+
+  if (isPreview) {
+    return <Text>@{chatData?.alias}/message</Text>;
   }
 
   return (

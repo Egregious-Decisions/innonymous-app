@@ -2,7 +2,13 @@ import { useMemo } from 'react';
 import { Text } from '@chakra-ui/react';
 import { MessageTextFragment } from '../../../../../store/models';
 
-const TextFragment = ({ fragment: { style, text } }: { fragment: MessageTextFragment }) => {
+const TextFragment = ({
+  fragment: { style, text },
+  isPreview,
+}: {
+  fragment: MessageTextFragment;
+  isPreview?: boolean;
+}) => {
   const as = useMemo(() => {
     switch (style) {
       case 'bold':
@@ -19,7 +25,7 @@ const TextFragment = ({ fragment: { style, text } }: { fragment: MessageTextFrag
   }, [style]);
 
   return (
-    <Text as={as} whiteSpace="break-spaces">
+    <Text as={as} whiteSpace={isPreview ? 'normal' : 'break-spaces'}>
       {text}
     </Text>
   );

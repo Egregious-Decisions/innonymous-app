@@ -1,10 +1,10 @@
-import { Link, Skeleton } from '@chakra-ui/react';
+import { Link, Skeleton, Text } from '@chakra-ui/react';
 import { apiSlice } from '../../../../../../store/apiSlice';
 import { Id } from '../../../../../../store/models';
 import ErrorFragment from '../ErrorFragment';
 import AppRouteLink from '../../../../../../components/ui/AppLink';
 
-const UserMention = ({ user }: { user: Id }) => {
+const UserMention = ({ user, isPreview }: { user: Id; isPreview?: boolean }) => {
   const { data, isLoading, isError } = apiSlice.useGetUserQuery({ user });
 
   if (isError) {
@@ -17,6 +17,10 @@ const UserMention = ({ user }: { user: Id }) => {
         @username
       </Skeleton>
     );
+  }
+
+  if (isPreview) {
+    return <Text>@{data?.alias}</Text>;
   }
 
   return (

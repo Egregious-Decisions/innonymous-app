@@ -1,10 +1,10 @@
-import { Link, Skeleton } from '@chakra-ui/react';
+import { Link, Skeleton, Text } from '@chakra-ui/react';
 import { apiSlice } from '../../../../../../store/apiSlice';
 import { Id } from '../../../../../../store/models';
 import ErrorFragment from '../ErrorFragment';
 import AppRouteLink from '../../../../../../components/ui/AppLink';
 
-const ChatMention = ({ chat }: { chat: Id }) => {
+const ChatMention = ({ chat, isPreview }: { chat: Id; isPreview?: boolean }) => {
   const { data, isLoading, isError } = apiSlice.useGetChatQuery({ chat });
 
   if (isError) {
@@ -17,6 +17,10 @@ const ChatMention = ({ chat }: { chat: Id }) => {
         @chat_link
       </Skeleton>
     );
+  }
+
+  if (isPreview) {
+    return <Text>@{data?.alias}</Text>;
   }
 
   return (
