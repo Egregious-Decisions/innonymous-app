@@ -51,14 +51,14 @@ jobs:
         run: npm run build
 
       - name: Upload artifact
-        if: ${{ !inputs.upload_for_github_pages || inputs.upload == "default" }}
+        if: ${{ !inputs.upload_for_github_pages || inputs.upload == 'default' }}
         uses: actions/upload-artifact@v3
         with:
           name: "build"
           path: "dist/*"
 
       - name: Upload Pages artifact
-        if: ${{ inputs.upload_for_github_pages || inputs.upload == "github_pages" }}
+        if: ${{ inputs.upload_for_github_pages || inputs.upload == 'github_pages' }}
         uses: actions/upload-pages-artifact@v1
         with:
           path: "dist/"
