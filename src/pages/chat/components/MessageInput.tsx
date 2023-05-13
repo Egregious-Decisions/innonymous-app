@@ -38,9 +38,14 @@ const MessageInput = ({
     messageRef.current.value = '';
   }, [chat, reply_to, sendMessage]);
 
+  const onSendClick = useCallback(async () => {
+    messageRef.current?.focus();
+    await onSend();
+  }, [onSend]);
+
   const sendOnEnter = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key !== 'Enter' || e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
+      if (e.code !== 'Enter' || e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
         return;
       }
       e.preventDefault();
@@ -62,7 +67,7 @@ const MessageInput = ({
         colorScheme="teal"
         aria-label="Send message"
         icon={<Icon as={MdSend} />}
-        onClick={onSend}
+        onClick={onSendClick}
         isLoading={isLoading}
       />
     </HStack>
