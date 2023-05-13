@@ -3,7 +3,7 @@
   "ignoreFiles": ["./*.ts", "node_modules/**/*"],
   "overrides": [
     {
-      "files": ["**/*.tsx"],
+      "files": ["**/*.ts", "**/*.tsx"],
       "customSyntax": "postcss-styled-syntax"
     }
   ]

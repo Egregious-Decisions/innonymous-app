@@ -2,6 +2,7 @@ module.exports = {
   env: { browser: true, es2020: true },
   extends: [
     'eslint:recommended',
+    'airbnb',
     'airbnb-typescript',
     'plugin:import/recommended',
     'plugin:import/typescript',
@@ -50,5 +51,20 @@ module.exports = {
     'react/require-default-props': 0,
     'react/self-closing-comp': 1,
     'react-refresh/only-export-components': 1,
+    '@typescript-eslint/naming-convention': [
+      2,
+      {
+        selector: ['variable', 'function'],
+        format: null,
+        leadingUnderscore: 'allow',
+      },
+    ],
+    '@typescript-eslint/no-unused-vars': [
+      1,
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
   },
 };
