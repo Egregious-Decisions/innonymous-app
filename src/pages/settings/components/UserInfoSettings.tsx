@@ -44,8 +44,8 @@ const UserInfoSettings = () => {
   }, [toast, isSuccess]);
 
   return (
-    <VStack>
-      <Card minWidth="sm">
+    <VStack width="0" minWidth={['xs', 'sm']} alignItems="stretch" margin="auto">
+      <Card>
         <CardBody>
           <FormControl>
             <FormLabel>Username (alias)</FormLabel>
@@ -65,8 +65,7 @@ const UserInfoSettings = () => {
           </FormControl>
         </CardBody>
       </Card>
-
-      <Card minWidth="sm">
+      <Card>
         <CardBody>
           <FormControl>
             <FormLabel>Display name</FormLabel>
@@ -80,7 +79,7 @@ const UserInfoSettings = () => {
           </FormControl>
         </CardBody>
       </Card>
-      <Card minWidth="sm">
+      <Card>
         <CardBody>
           <FormControl>
             <FormLabel>About</FormLabel>
@@ -95,7 +94,7 @@ const UserInfoSettings = () => {
         </CardBody>
       </Card>
       <FormError validationError="Invalid alias or description" {...{ isError, error }} />
-      <Button onClick={onSave} colorScheme="teal" isLoading={isLoading}>
+      <Button alignSelf="center" onClick={onSave} colorScheme="teal" isLoading={isLoading}>
         save
       </Button>
     </VStack>
