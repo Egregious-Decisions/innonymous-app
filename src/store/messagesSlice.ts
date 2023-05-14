@@ -1,20 +1,18 @@
-import { EntityState, Slice, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { messageNew } from './actions';
-import { Message } from './models';
+import { Id, Message } from './models';
 import type { RootState } from './store';
 import { apiSlice } from './apiSlice';
 
+export const getMessageId = (chat: Id, message: Id) => `${chat}/${message}`;
+
 const messagesAdapter = createEntityAdapter<Message>({
-  selectId: ({ chat, id }) => `${chat}.${id}`,
+  selectId: ({ chat, id }) => getMessageId(chat, id),
   sortComparer: ({ created_at: first }, { created_at: second }) =>
     new Date(second).getTime() - new Date(first).getTime(),
 });
 
-export const messagesSlice: Slice<
-  EntityState<Message>,
-  Record<string, never>,
-  'messages'
-> = createSlice({
+export const messagesSlice = createSlice({
   name: 'messages',
   initialState: messagesAdapter.getInitialState(),
   reducers: {},

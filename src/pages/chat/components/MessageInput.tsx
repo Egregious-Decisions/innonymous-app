@@ -1,19 +1,16 @@
-import { HStack, IconButton, Icon } from '@chakra-ui/react';
+import { HStack, IconButton, Icon, VStack, CloseButton } from '@chakra-ui/react';
 import { useCallback, useRef, KeyboardEvent, useEffect } from 'react';
-import { MdAdd, MdSend } from 'react-icons/md';
+import { MdSend } from 'react-icons/md';
 import AutosizeTextarea from '../../../components/ui/AutosizeTextarea';
 import { apiSlice } from '../../../store/apiSlice';
 import { Id } from '../../../store/models';
+import { useAppDispatch, useAppSelector } from '../../../store/store';
+import ReplyTo from './ReplyTo';
+import { messageInputCancel } from '../../../store/actions';
 
-const MessageInput = ({
-  chat,
-  reply_to,
-  onMessageSent,
-}: {
-  chat: Id;
-  reply_to?: Id;
-  onMessageSent?: () => void;
-}) => {
+const MessageInput = ({ chat, onMessageSent }: { chat: Id; onMessageSent?: () => void }) => {
+  const dispatch = useAppDispatch();
+  const { reply_to } = useAppSelector((state) => state.input);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const [sendMessage, { isLoading }] = apiSlice.useCreateMessageMutation();
 
@@ -23,6 +20,12 @@ const MessageInput = ({
     }
     onMessageSent();
   }, [isLoading, onMessageSent]);
+
+  useEffect(() => {
+    messageRef.current?.focus();
+  }, [reply_to]);
+
+  const cancelReplyOrForward = useCallback(() => dispatch(messageInputCancel()), [dispatch]);
 
   const onSend = useCallback(async () => {
     if (messageRef.current === null || messageRef.current.value.trim() === '') {
@@ -36,9 +39,10 @@ const MessageInput = ({
     };
 
     messageRef.current.value = '';
+    cancelReplyOrForward();
 
     await sendMessage(message);
-  }, [chat, reply_to, sendMessage]);
+  }, [cancelReplyOrForward, chat, reply_to, sendMessage]);
 
   const onSendClick = useCallback(async () => {
     messageRef.current?.focus();
@@ -57,23 +61,31 @@ const MessageInput = ({
   );
 
   return (
-    <HStack background="panel-bg" padding={2} alignItems="end">
-      <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
-      <AutosizeTextarea
-        onKeyDown={sendOnEnter}
-        maxLength={1024}
-        ref={messageRef}
-        placeholder="Message text"
-        paddingY={2}
-      />
-      <IconButton
-        colorScheme="teal"
-        aria-label="Send message"
-        icon={<Icon as={MdSend} />}
-        onClick={onSendClick}
-        isLoading={isLoading}
-      />
-    </HStack>
+    <VStack spacing={0} alignItems="stretch">
+      {reply_to && (
+        <HStack background="panel-bg" padding="1">
+          <ReplyTo chat={chat} reply_to={reply_to} />
+          <CloseButton onClick={cancelReplyOrForward} />
+        </HStack>
+      )}
+      <HStack background="panel-bg" padding={2} alignItems="end">
+        {/* <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} /> */}
+        <AutosizeTextarea
+          onKeyDown={sendOnEnter}
+          maxLength={1024}
+          ref={messageRef}
+          placeholder="Message text"
+          paddingY={2}
+        />
+        <IconButton
+          colorScheme="teal"
+          aria-label="Send message"
+          icon={<Icon as={MdSend} />}
+          onClick={onSendClick}
+          isLoading={isLoading}
+        />
+      </HStack>
+    </VStack>
   );
 };
 

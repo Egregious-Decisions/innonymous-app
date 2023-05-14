@@ -121,13 +121,15 @@ export interface MessageFiles {
 
 export type MessageBody = MessageText | MessageFiles;
 
+export type MessageForward = { chat: Id; message: Id };
+
 export interface Message {
   chat: Id;
   author: Id;
   body: MessageBody;
   id: Id;
   replied_to?: Id;
-  forwarded_from?: Id;
+  forwarded_from?: MessageForward;
   updated_at: string;
   created_at: string;
 }

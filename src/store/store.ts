@@ -4,14 +4,16 @@ import { apiSlice } from './apiSlice';
 import { authSlice } from './authSlice';
 import { messagesSlice } from './messagesSlice';
 import { chatsSlice } from './chatsSlice';
-import { pendingSlice } from './pendingSlice';
+import { failedSlice } from './failedSlice';
+import { inputStateSlice } from './inputStateSlice';
 
 export const store = configureStore({
   reducer: {
     [chatsSlice.name]: chatsSlice.reducer,
     [authSlice.name]: authSlice.reducer,
     [messagesSlice.name]: messagesSlice.reducer,
-    [pendingSlice.name]: pendingSlice.reducer,
+    [inputStateSlice.name]: inputStateSlice.reducer,
+    [failedSlice.name]: failedSlice.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware),

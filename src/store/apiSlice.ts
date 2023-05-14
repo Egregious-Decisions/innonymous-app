@@ -27,15 +27,7 @@ import {
   ChatQueryFilter,
 } from './models';
 import type { AppDispatch, RootState } from './store';
-import {
-  authFailed,
-  authRenewed,
-  chatNew,
-  messageFailed,
-  messageNew,
-  messagePending,
-  messageSent,
-} from './actions';
+import { authFailed, authRenewed, chatNew, messageFailed, messageNew } from './actions';
 
 const { VITE_API_ROOT: API_ROOT } = import.meta.env;
 
@@ -137,8 +129,8 @@ export const apiSlice = createApi({
         }
         if ('message' in result && typeof result.message !== 'string') {
           return [
-            { type: 'message', id: `${result.message.chat}.${result.message.id}` },
-            { type: 'message', id: `${result.message.chat}.recent` },
+            { type: 'message', id: `${result.message.chat}/${result.message.id}` },
+            { type: 'message', id: `${result.message.chat}/recent` },
           ];
         }
         if ('user' in result && typeof result.user !== 'string') {
@@ -264,7 +256,7 @@ export const apiSlice = createApi({
         result
           ? result.messages.map(({ id }) => ({
               type: 'message',
-              id: `${chat}.${id}`,
+              id: `${chat}/${id}`,
             }))
           : [],
     }),
@@ -273,7 +265,7 @@ export const apiSlice = createApi({
         url: `/chats/${chat}/messages/${message}`,
       }),
       providesTags: (result) =>
-        result ? [{ type: 'message', id: `${result.chat}.${result.id}` }] : [],
+        result ? [{ type: 'message', id: `${result.chat}/${result.id}` }] : [],
     }),
     createMessage: builder.mutation<Message, MessageCreateBody & PathParameter<'chat', Id>>({
       query: ({ chat, ...message }) => ({
@@ -282,17 +274,15 @@ export const apiSlice = createApi({
         body: message,
       }),
       onQueryStarted: async (arg, { dispatch, requestId, queryFulfilled }) => {
-        dispatch(messagePending({ ...arg, requestId, created_at: new Date().toISOString() }));
+        const created_at = new Date().toISOString();
         try {
           await queryFulfilled;
         } catch (e) {
-          dispatch(messageFailed(requestId));
-          return;
+          dispatch(messageFailed({ ...arg, requestId, created_at }));
         }
-        dispatch(messageSent(requestId));
       },
       invalidatesTags: (result, _, { chat }) =>
-        result ? [{ type: 'message', id: `${chat}.recent` }] : [],
+        result ? [{ type: 'message', id: `${chat}/recent` }] : [],
     }),
     updateMessage: builder.mutation<Message, MessageUpdate & PathParameter<'chat' | 'message', Id>>(
       {
@@ -302,7 +292,7 @@ export const apiSlice = createApi({
           body: update,
         }),
         invalidatesTags: (result) =>
-          result ? [{ type: 'message', id: `${result.chat}.${result.id}` }] : [],
+          result ? [{ type: 'message', id: `${result.chat}/${result.id}` }] : [],
       },
     ),
     deleteMessage: builder.mutation<null, PathParameter<'message' | 'chat', Id>>({
@@ -311,7 +301,7 @@ export const apiSlice = createApi({
         method: 'DELETE',
       }),
       invalidatesTags: (result, _, { chat, message }) =>
-        result ? [{ type: 'message', id: `${chat}.${message}` }] : [],
+        result ? [{ type: 'message', id: `${chat}/${message}` }] : [],
     }),
   }),
 });

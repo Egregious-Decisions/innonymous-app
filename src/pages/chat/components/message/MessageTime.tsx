@@ -1,14 +1,15 @@
-import { Tooltip, Icon, Text, Center, Box, Spinner } from '@chakra-ui/react';
+import { Tooltip, Icon, Text, Center, Box } from '@chakra-ui/react';
 import { AiFillEdit } from 'react-icons/ai';
+import { MdError } from 'react-icons/md';
 import DateTime from '../../../../components/ui/DateTime';
 
 interface MessageTimeProps {
   updated_at?: Date;
   created_at: Date;
-  isPending?: boolean;
+  isFailed?: boolean;
 }
 
-const MessageTime = ({ updated_at, created_at, isPending }: MessageTimeProps) => {
+const MessageTime = ({ updated_at, created_at, isFailed }: MessageTimeProps) => {
   const isEdited = updated_at && created_at.getTime() !== updated_at.getTime();
   return (
     <Tooltip
@@ -28,7 +29,7 @@ const MessageTime = ({ updated_at, created_at, isPending }: MessageTimeProps) =>
     >
       <Center flexDirection="row">
         {isEdited && <Icon as={AiFillEdit} />}
-        {isPending && <Spinner size="xs" />}
+        {isFailed && <Icon as={MdError} />}
         <Text minWidth="fit-content">
           <DateTime time={created_at} format="time" />
         </Text>
