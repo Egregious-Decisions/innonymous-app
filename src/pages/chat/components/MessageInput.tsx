@@ -1,19 +1,14 @@
-import { HStack, IconButton, Icon } from '@chakra-ui/react';
+import { HStack, IconButton, Icon, VStack } from '@chakra-ui/react';
 import { useCallback, useRef, KeyboardEvent, useEffect } from 'react';
 import { MdAdd, MdSend } from 'react-icons/md';
 import AutosizeTextarea from '../../../components/ui/AutosizeTextarea';
 import { apiSlice } from '../../../store/apiSlice';
 import { Id } from '../../../store/models';
+import { useAppSelector } from '../../../store/store';
+import ReplyTo from './ReplyTo';
 
-const MessageInput = ({
-  chat,
-  reply_to,
-  onMessageSent,
-}: {
-  chat: Id;
-  reply_to?: Id;
-  onMessageSent?: () => void;
-}) => {
+const MessageInput = ({ chat, onMessageSent }: { chat: Id; onMessageSent?: () => void }) => {
+  const { reply_to } = useAppSelector((state) => state.input);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const [sendMessage, { isLoading }] = apiSlice.useCreateMessageMutation();
 
@@ -57,23 +52,26 @@ const MessageInput = ({
   );
 
   return (
-    <HStack background="panel-bg" padding={2} alignItems="end">
-      <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
-      <AutosizeTextarea
-        onKeyDown={sendOnEnter}
-        maxLength={1024}
-        ref={messageRef}
-        placeholder="Message text"
-        paddingY={2}
-      />
-      <IconButton
-        colorScheme="teal"
-        aria-label="Send message"
-        icon={<Icon as={MdSend} />}
-        onClick={onSendClick}
-        isLoading={isLoading}
-      />
-    </HStack>
+    <VStack spacing={0} alignItems="stretch">
+      {reply_to && <ReplyTo chat={chat} reply_to={reply_to} />}
+      <HStack background="panel-bg" padding={2} alignItems="end">
+        <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
+        <AutosizeTextarea
+          onKeyDown={sendOnEnter}
+          maxLength={1024}
+          ref={messageRef}
+          placeholder="Message text"
+          paddingY={2}
+        />
+        <IconButton
+          colorScheme="teal"
+          aria-label="Send message"
+          icon={<Icon as={MdSend} />}
+          onClick={onSendClick}
+          isLoading={isLoading}
+        />
+      </HStack>
+    </VStack>
   );
 };
 

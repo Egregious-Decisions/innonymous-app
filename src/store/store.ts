@@ -5,12 +5,14 @@ import { authSlice } from './authSlice';
 import { messagesSlice } from './messagesSlice';
 import { chatsSlice } from './chatsSlice';
 import { failedSlice } from './failedSlice';
+import { inputStateSlice } from './inputStateSlice';
 
 export const store = configureStore({
   reducer: {
     [chatsSlice.name]: chatsSlice.reducer,
     [authSlice.name]: authSlice.reducer,
     [messagesSlice.name]: messagesSlice.reducer,
+    [inputStateSlice.name]: inputStateSlice.reducer,
     [failedSlice.name]: failedSlice.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },

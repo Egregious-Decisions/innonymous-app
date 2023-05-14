@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Chat, Message, MessageCreateBody, Session } from './models';
+import { Chat, Id, Message, MessageCreateBody, MessageForward, Session } from './models';
 
 export const authLogout = createAction('auth/logout');
 export const authFailed = createAction('auth/failed');
@@ -15,5 +15,9 @@ export type FailedMessage = MessageCreateBody &
   };
 export const messageFailed = createAction<FailedMessage>('message/failed');
 export const messageRetry = createAction<string>('message/retry');
+
+export const messageInputReply = createAction<Id>('message/input/reply');
+export const messageInputForward = createAction<MessageForward[]>('message/input/forward');
+export const messageInputCancel = createAction('message/input/cancel');
 
 export const chatNew = createAction<Chat>('chat/new');
