@@ -1,13 +1,15 @@
-import { HStack, IconButton, Icon, VStack } from '@chakra-ui/react';
+import { HStack, IconButton, Icon, VStack, CloseButton } from '@chakra-ui/react';
 import { useCallback, useRef, KeyboardEvent, useEffect } from 'react';
 import { MdAdd, MdSend } from 'react-icons/md';
 import AutosizeTextarea from '../../../components/ui/AutosizeTextarea';
 import { apiSlice } from '../../../store/apiSlice';
 import { Id } from '../../../store/models';
-import { useAppSelector } from '../../../store/store';
+import { useAppDispatch, useAppSelector } from '../../../store/store';
 import ReplyTo from './ReplyTo';
+import { messageInputCancel } from '../../../store/actions';
 
 const MessageInput = ({ chat, onMessageSent }: { chat: Id; onMessageSent?: () => void }) => {
+  const dispatch = useAppDispatch();
   const { reply_to } = useAppSelector((state) => state.input);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const [sendMessage, { isLoading }] = apiSlice.useCreateMessageMutation();
@@ -18,6 +20,8 @@ const MessageInput = ({ chat, onMessageSent }: { chat: Id; onMessageSent?: () =>
     }
     onMessageSent();
   }, [isLoading, onMessageSent]);
+
+  const cancelReplyOrForward = useCallback(() => dispatch(messageInputCancel()), [dispatch]);
 
   const onSend = useCallback(async () => {
     if (messageRef.current === null || messageRef.current.value.trim() === '') {
@@ -53,7 +57,12 @@ const MessageInput = ({ chat, onMessageSent }: { chat: Id; onMessageSent?: () =>
 
   return (
     <VStack spacing={0} alignItems="stretch">
-      {reply_to && <ReplyTo chat={chat} reply_to={reply_to} />}
+      {reply_to && (
+        <HStack background="panel-bg" padding="1">
+          <ReplyTo chat={chat} reply_to={reply_to} />
+          <CloseButton onClick={cancelReplyOrForward} />
+        </HStack>
+      )}
       <HStack background="panel-bg" padding={2} alignItems="end">
         <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
         <AutosizeTextarea

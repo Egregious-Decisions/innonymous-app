@@ -2,6 +2,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Flex,
   HStack,
   Icon,
   IconButton,
@@ -17,6 +18,7 @@ import { Message } from '../../../../store/models';
 import { FailedMessage, messageInputReply } from '../../../../store/actions';
 import MessageAuthor from './MessageAuthor';
 import { useAppDispatch } from '../../../../store/store';
+import ReplyTo from '../ReplyTo';
 
 const isFailed = (message: Message | FailedMessage): message is FailedMessage =>
   !('author' in message);
@@ -64,6 +66,11 @@ const MessageItem = ({ message }: { message: Message | FailedMessage }) => {
           </HStack>
         </CardHeader>
         <CardBody padding={0}>
+          {message.replied_to && (
+            <Flex>
+              <ReplyTo chat={message.chat} reply_to={message.replied_to} />
+            </Flex>
+          )}
           <MessageBody body={message.body} />
         </CardBody>
       </Card>
