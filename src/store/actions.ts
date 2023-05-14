@@ -9,14 +9,11 @@ export const authRestored = createAction<Partial<Session>>('auth/restored');
 
 export const messageNew = createAction<Message>('message/new');
 
-export type PendingMessage = MessageCreateBody &
+export type FailedMessage = MessageCreateBody &
   Pick<Message, 'chat' | 'created_at'> & {
     requestId: string;
-    failed?: boolean;
   };
-export const messagePending = createAction<PendingMessage>('message/pending');
-export const messageSent = createAction<string>('message/pending/sent');
-export const messageFailed = createAction<string>('message/pending/failed');
-export const messageRetry = createAction<string>('message/pending/retry');
+export const messageFailed = createAction<FailedMessage>('message/failed');
+export const messageRetry = createAction<string>('message/retry');
 
 export const chatNew = createAction<Chat>('chat/new');

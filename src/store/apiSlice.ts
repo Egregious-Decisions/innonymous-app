@@ -27,15 +27,7 @@ import {
   ChatQueryFilter,
 } from './models';
 import type { AppDispatch, RootState } from './store';
-import {
-  authFailed,
-  authRenewed,
-  chatNew,
-  messageFailed,
-  messageNew,
-  messagePending,
-  messageSent,
-} from './actions';
+import { authFailed, authRenewed, chatNew, messageFailed, messageNew } from './actions';
 
 const { VITE_API_ROOT: API_ROOT } = import.meta.env;
 
@@ -282,14 +274,12 @@ export const apiSlice = createApi({
         body: message,
       }),
       onQueryStarted: async (arg, { dispatch, requestId, queryFulfilled }) => {
-        dispatch(messagePending({ ...arg, requestId, created_at: new Date().toISOString() }));
+        const created_at = new Date().toISOString();
         try {
           await queryFulfilled;
         } catch (e) {
-          dispatch(messageFailed(requestId));
-          return;
+          dispatch(messageFailed({ ...arg, requestId, created_at }));
         }
-        dispatch(messageSent(requestId));
       },
       invalidatesTags: (result, _, { chat }) =>
         result ? [{ type: 'message', id: `${chat}.recent` }] : [],

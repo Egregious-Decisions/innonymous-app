@@ -1,4 +1,4 @@
-import { EntityState, Slice, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
 import { messageNew } from './actions';
 import { Message } from './models';
 import type { RootState } from './store';
@@ -10,11 +10,7 @@ const messagesAdapter = createEntityAdapter<Message>({
     new Date(second).getTime() - new Date(first).getTime(),
 });
 
-export const messagesSlice: Slice<
-  EntityState<Message>,
-  Record<string, never>,
-  'messages'
-> = createSlice({
+export const messagesSlice = createSlice({
   name: 'messages',
   initialState: messagesAdapter.getInitialState(),
   reducers: {},

@@ -4,13 +4,13 @@ import MessageTime from './MessageTime';
 import MessageBody from './body/MessageBody';
 import { apiSlice } from '../../../../store/apiSlice';
 import { Message } from '../../../../store/models';
-import { PendingMessage } from '../../../../store/actions';
+import { FailedMessage } from '../../../../store/actions';
 import MessageAuthor from './MessageAuthor';
 
-const isPending = (message: Message | PendingMessage): message is PendingMessage =>
+const isFailed = (message: Message | FailedMessage): message is FailedMessage =>
   !('author' in message);
 
-const MessageItem = ({ message }: { message: Message | PendingMessage }) => {
+const MessageItem = ({ message }: { message: Message | FailedMessage }) => {
   const headerColor = useColorModeValue('gray.800', 'gray.200');
   const messagesColor = useColorModeValue('gray.50', 'gray.700');
   const myMessagesColor = useColorModeValue('teal.100', 'teal.800');
@@ -18,7 +18,7 @@ const MessageItem = ({ message }: { message: Message | PendingMessage }) => {
   const [getUser, { data: authorData }] = apiSlice.useLazyGetUserQuery();
 
   useEffect(() => {
-    if (isPending(message)) {
+    if (isFailed(message)) {
       return;
     }
     getUser({ user: message.author });
@@ -38,8 +38,8 @@ const MessageItem = ({ message }: { message: Message | PendingMessage }) => {
           <Spacer />
           <MessageTime
             created_at={new Date(message.created_at)}
-            updated_at={isPending(message) ? undefined : new Date(message.updated_at)}
-            isPending={isPending(message)}
+            updated_at={isFailed(message) ? undefined : new Date(message.updated_at)}
+            isFailed={isFailed(message)}
           />
         </HStack>
       </CardHeader>
