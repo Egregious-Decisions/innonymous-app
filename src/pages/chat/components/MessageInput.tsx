@@ -1,6 +1,6 @@
 import { HStack, IconButton, Icon, VStack, CloseButton } from '@chakra-ui/react';
 import { useCallback, useRef, KeyboardEvent, useEffect } from 'react';
-import { MdAdd, MdSend } from 'react-icons/md';
+import { MdSend } from 'react-icons/md';
 import AutosizeTextarea from '../../../components/ui/AutosizeTextarea';
 import { apiSlice } from '../../../store/apiSlice';
 import { Id } from '../../../store/models';
@@ -64,7 +64,7 @@ const MessageInput = ({ chat, onMessageSent }: { chat: Id; onMessageSent?: () =>
         </HStack>
       )}
       <HStack background="panel-bg" padding={2} alignItems="end">
-        <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} />
+        {/* <IconButton aria-label="Add attachment" icon={<Icon as={MdAdd} />} /> */}
         <AutosizeTextarea
           onKeyDown={sendOnEnter}
           maxLength={1024}
