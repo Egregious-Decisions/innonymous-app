@@ -12,10 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Read-only permissions for GITHUB_TOKEN
-    permissions:
-      contents: read
-
     steps:
       - uses: actions/checkout@v3
 
@@ -26,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        
+
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
         env:
