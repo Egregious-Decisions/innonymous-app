@@ -21,6 +21,10 @@ const MessageInput = ({ chat, onMessageSent }: { chat: Id; onMessageSent?: () =>
     onMessageSent();
   }, [isLoading, onMessageSent]);
 
+  useEffect(() => {
+    messageRef.current?.focus();
+  }, [reply_to]);
+
   const cancelReplyOrForward = useCallback(() => dispatch(messageInputCancel()), [dispatch]);
 
   const onSend = useCallback(async () => {
@@ -35,9 +39,10 @@ const MessageInput = ({ chat, onMessageSent }: { chat: Id; onMessageSent?: () =>
     };
 
     messageRef.current.value = '';
+    cancelReplyOrForward();
 
     await sendMessage(message);
-  }, [chat, reply_to, sendMessage]);
+  }, [cancelReplyOrForward, chat, reply_to, sendMessage]);
 
   const onSendClick = useCallback(async () => {
     messageRef.current?.focus();
