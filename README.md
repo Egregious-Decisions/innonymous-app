@@ -1,13 +1,9 @@
-# styled-react-ts-vite
+# Innonymous App
 
-This is a template of a web application that includes the following components configured to work together:
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=innonymous_app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=innonymous_app)
 
-- **[Typescript](https://www.typescriptlang.org/)**
-- **[React 18](https://react.dev/)**
-- **[Vite](https://vitejs.dev/)**
-- [ESLint](https://eslint.org/)
-- [styled-components](https://styled-components.com/)
-- [stylelint](https://stylelint.io/) with [postcss-styled-syntax](https://github.com/hudochenkov/postcss-styled-syntax)
-- [prettier](https://prettier.io/)
+Features:
 
-Additionally, some VSCode configuration is provided in [.vscode](./.vscode) folder.
+- [x] Responsive design for desktop and mobile
+- [x] Light theme support (dark theme is better anyway)
+- [x] Persistent authentication
