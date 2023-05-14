@@ -15,9 +15,9 @@ const Settings = () => (
       <Tab>
         <Heading size="md">password</Heading>
       </Tab>
-      <Tab isDisabled>
+      {/* <Tab isDisabled>
         <Heading size="md">sessions</Heading>
-      </Tab>
+      </Tab> */}
     </TabList>
     <TabPanels overflowY="scroll" flex="1">
       <TabPanel>
