@@ -32,3 +32,4 @@ jobs:
           args: >
             -Dsonar.organization=innonymous
             -Dsonar.projectKey=innonymous_app
+            -Dsonar.typescript.tsconfigPath=./tsconfig.sonarcloud.json
