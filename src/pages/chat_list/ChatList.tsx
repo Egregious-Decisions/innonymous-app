@@ -1,4 +1,4 @@
-import { Box, Divider, Spinner, Text, VStack, useBoolean } from '@chakra-ui/react';
+import { Box, Center, Divider, Spinner, Text, VStack, useBoolean } from '@chakra-ui/react';
 import { useMemo, useCallback } from 'react';
 import ChatItem from './ChatItem';
 import { apiSlice } from '../../store/apiSlice';
@@ -46,8 +46,12 @@ const ChatList = () => {
       {chats.map((chat) => (
         <ChatItem chat={chat} key={chat.id} />
       ))}
-      {!isLoading && chats.length === 0 && <Text>no chats</Text>}
-      {oldestLoadedDate && (
+      {!isLoading && chats.length === 0 && (
+        <Center flex="1">
+          <Text>no chats yet</Text>
+        </Center>
+      )}
+      {oldestLoadedDate !== null && (
         <Box paddingY="3">
           <LoadMoreTrigger
             load={onLoadMore}

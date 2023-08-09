@@ -13,6 +13,7 @@ import {
   Input,
   VStack,
   Text,
+  Code,
 } from '@chakra-ui/react';
 import Captcha from '../../components/form/Captcha';
 import AutosizeTextarea from '../../components/ui/AutosizeTextarea';
@@ -64,8 +65,14 @@ const CreateChat = () => {
                 isRequired
               />
               <FormHelperText>required, 5 to 32 symbols</FormHelperText>
+              <FormHelperText>only latin letters, digits, and underscores</FormHelperText>
+              <FormHelperText>should not start or end with an underscore</FormHelperText>
               <FormHelperText>
-                Preview: {window.location.origin}/{chatAlias}
+                Preview:
+                <br />
+                <Code fontSize="xs">
+                  {window.location.origin}/{chatAlias}
+                </Code>
               </FormHelperText>
             </FormControl>
             <FormControl>

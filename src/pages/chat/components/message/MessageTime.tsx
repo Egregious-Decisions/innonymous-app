@@ -14,8 +14,9 @@ const MessageTime = ({ updated_at, created_at, isFailed }: MessageTimeProps) => 
   return (
     <Tooltip
       fontSize="sm"
+      maxWidth="sm"
       label={
-        <Box whiteSpace="nowrap">
+        <Box>
           <Text>
             Sent on <DateTime time={created_at} format="full" />
           </Text>
