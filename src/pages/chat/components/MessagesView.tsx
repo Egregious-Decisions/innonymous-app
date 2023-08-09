@@ -69,5 +69,6 @@ const MessagesView = forwardRef<HTMLDivElement, { chat: Id }>(({ chat }, ref) =>
     </Stack>
   );
 });
+MessagesView.displayName = 'MessagesView';
 
 export default MessagesView;

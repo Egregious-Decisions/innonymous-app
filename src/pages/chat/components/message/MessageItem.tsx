@@ -4,13 +4,10 @@ import {
   CardHeader,
   Flex,
   HStack,
-  Icon,
-  IconButton,
   Spacer,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { useCallback, useEffect } from 'react';
-import { MdReply } from 'react-icons/md';
+import { memo, useCallback, useEffect } from 'react';
 import MessageTime from './MessageTime';
 import MessageBody from './body/MessageBody';
 import { apiSlice } from '../../../../store/apiSlice';
@@ -19,11 +16,12 @@ import { FailedMessage, messageInputReply } from '../../../../store/actions';
 import MessageAuthor from './MessageAuthor';
 import { useAppDispatch } from '../../../../store/store';
 import ReplyTo from '../ReplyTo';
+import ReplyButton from './actions/ReplyButton';
 
 const isFailed = (message: Message | FailedMessage): message is FailedMessage =>
   !('author' in message);
 
-const MessageItem = ({ message }: { message: Message | FailedMessage }) => {
+const MessageItem = memo(({ message }: { message: Message | FailedMessage }) => {
   const headerColor = useColorModeValue('gray.800', 'gray.200');
   const messagesColor = useColorModeValue('gray.50', 'gray.700');
   const myMessagesColor = useColorModeValue('teal.100', 'teal.800');
@@ -74,18 +72,10 @@ const MessageItem = ({ message }: { message: Message | FailedMessage }) => {
           <MessageBody body={message.body} />
         </CardBody>
       </Card>
-      {!isFailed(message) && (
-        <IconButton
-          size="sm"
-          variant="solid"
-          colorScheme="gray"
-          aria-label="reply"
-          icon={<Icon as={MdReply} />}
-          onClick={onReply}
-        />
-      )}
+      {!isFailed(message) && <ReplyButton onReply={onReply} />}
     </HStack>
   );
-};
+});
+MessageItem.displayName = 'MessageItem';
 
 export default MessageItem;
